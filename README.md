@@ -9,7 +9,7 @@ Respectez l'arborescence des dossiers, respecter le format des noms des fichiers
 
 ### Variables
 
-Touts les variables seront de format **camelCase**, pas de type any
+Touts les variables seront de format **camelCase**
 
 ### Functions
 
