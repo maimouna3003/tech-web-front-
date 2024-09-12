@@ -1,7 +1,7 @@
 import React from "react";
 import InputComponent from "../components/input.component";
-import illustrationLogin from "../../image/close-up-person-working-alternative-energy.jpg";
-import logoApp from "../../image/Logo Tutor Planner.png";
+import illustrationLogin from "../../image/Happy student-amico.svg";
+import logoApp from "../../image/Black_Illustrated_School_Logo-removebg-preview.png";
 import ButtonComponent from "../components/button.component";
 
 const Login: React.FC = () => {
@@ -45,7 +45,7 @@ const Login: React.FC = () => {
             <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
               <div className="w-full flex-1 mt-8">
                 <div className="flex flex-col items-center">
-                  <img className="w-[17rem]" src={logoApp} alt="" />
+                  <img className="w-[15rem]" src={logoApp} alt="" />
                 </div>
 
                 <div className="my-12 border-b text-center">
@@ -73,14 +73,14 @@ const Login: React.FC = () => {
                   <p className="mt-6 text-xs text-gray-600 text-center">
                     I agree to abide by Cartesian Kinetics
                     <a
-                      href=" "
+                      href="#"
                       className="border-b border-gray-500 border-dotted"
                     >
                       Terms of Service
                     </a>
                     and its
                     <a
-                      href=" "
+                      href="#"
                       className="border-b border-gray-500 border-dotted"
                     >
                       Privacy Policy
