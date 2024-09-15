@@ -1,0 +1,6 @@
+export enum Profil {
+    ADMINISTRATEUR = 'ADMINISTRATEUR',
+    RESPONSABLE = 'RESPONSABLE',
+    TUTEUR = 'TUTEUR',
+  }
+  
