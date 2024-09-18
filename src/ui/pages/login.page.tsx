@@ -3,6 +3,7 @@ import InputComponent from "../components/input.component";
 import illustrationLogin from "../../image/Happy student-amico.svg";
 import logoApp from "../../image/Black_Illustrated_School_Logo-removebg-preview.png";
 import ButtonComponent from "../components/button.component";
+import { TextField } from "@mui/material";
 
 const Login: React.FC = () => {
   const envelopeIcon = (
@@ -55,6 +56,12 @@ const Login: React.FC = () => {
                 </div>
 
                 <div className="mx-auto max-w-xs">
+                  {/* <TextField
+                    id="standard-basic"
+                    label="Standard"
+                    variant="standard"
+
+                  /> */}
                   <InputComponent
                     type="text"
                     name="email"

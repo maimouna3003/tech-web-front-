@@ -6,6 +6,7 @@ interface InputComponentProps {
   placeholder?: string;
   svgIcon: JSX.Element;
   className?: string; // Propriété optionnelle pour la classe personnalisée
+  onChange?: any;
 }
 
 const InputComponent: React.FC<InputComponentProps> = ({
@@ -14,6 +15,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
   placeholder,
   svgIcon,
   className,
+  onChange,
 }) => {
   return (
     <div className={`flex shadow-sm rounded-lg ${className ? className : ""}`}>
@@ -22,6 +24,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
         name={name}
         type={type}
         placeholder={placeholder}
+        onChange={() => onChange()}
       />
       <button className="py-1 rounded-e-lg text-white bg-green-300 flex justify-center items-center w-10 h-15">
         {svgIcon}
