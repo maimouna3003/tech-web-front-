@@ -1,7 +1,7 @@
 import React from "react";
 import InputComponent from "../components/input.component";
-import illustrationLogin from "../../image/Happy student-amico.svg";
-import logoApp from "../../image/Black_Illustrated_School_Logo-removebg-preview.png";
+import illustrationLogin from "../../image/close-up-person-working-alternative-energy.jpg";
+import logoApp from "../../image/Logo Tutor Planner.png";
 import ButtonComponent from "../components/button.component";
 
 const Login: React.FC = () => {
@@ -37,7 +37,7 @@ const Login: React.FC = () => {
           style={{ maxWidth: "1000px" }}
         >
           <div className="md:flex w-full">
-            <div className="hidden md:block w-1/2 bg-green-500 py-10 px-10">
+            <div className="hidden md:block w-1/2 ">
               {/* IMAGE ICI */}
               <img src={illustrationLogin} alt="" />
             </div>
@@ -45,7 +45,7 @@ const Login: React.FC = () => {
             <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
               <div className="w-full flex-1 mt-8">
                 <div className="flex flex-col items-center">
-                  <img className="w-[15rem]" src={logoApp} alt="" />
+                  <img className="w-[17rem]" src={logoApp} alt="" />
                 </div>
 
                 <div className="my-12 border-b text-center">
