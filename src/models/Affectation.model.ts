@@ -1,12 +1,9 @@
+import IGlobal from "./Global.model";
+import IModule from "./Module.model";
+import IUtilisateur from "./Utilisateur.model";
 
-import IModule from './Module.model';
-import IUtilisateur from './Utilisateur.model';
-
-export default interface IAffectation {
-  id: string;
+export default interface IAffectation extends IGlobal {
   date: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  module:IModule; // Relation vers Module
-  utilisateur:IUtilisateur ; // Relation vers Utilisateur
+  module: IModule; // Relation vers Module
+  utilisateur: IUtilisateur; // Relation vers Utilisateur
 }

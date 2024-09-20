@@ -1,33 +1,31 @@
 import React from "react";
-import InputComponent from "../components/input.component";
 import illustrationLogin from "../../image/close-up-person-working-alternative-energy.jpg";
 import logoApp from "../../image/Logo Tutor Planner.png";
-import ButtonComponent from "../components/button.component";
-
+import { useForm } from "react-hook-form";
+import UserLogin from "../../models/UserLogin.model";
+import { Button, LinearProgress, Stack, TextField } from "@mui/material";
+import MailOutlineOutlinedIcon from "@mui/icons-material/MailOutlineOutlined";
+import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
+import { wait } from "@testing-library/user-event/dist/utils";
+import { useNavigate } from "react-router-dom";
+import { RoutesName } from "../../services/helpers.service";
+import UserService from "../../services/user.service";
 const Login: React.FC = () => {
-  const envelopeIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="black"
-    >
-      <path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM12.0606 11.6829L5.64722 6.2377L4.35278 7.7623L12.0731 14.3171L19.6544 7.75616L18.3456 6.24384L12.0606 11.6829Z"></path>
-    </svg>
-  );
+  const navigate = useNavigate();
 
-  const LockIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="black"
-      width="24"
-      height="24"
-    >
-      <path d="M19 10H20C20.5523 10 21 10.4477 21 11V21C21 21.5523 20.5523 22 20 22H4C3.44772 22 3 21.5523 3 21V11C3 10.4477 3.44772 10 4 10H5V9C5 5.13401 8.13401 2 12 2C15.866 2 19 5.13401 19 9V10ZM17 10V9C17 6.23858 14.7614 4 12 4C9.23858 4 7 6.23858 7 9V10H17ZM11 14V18H13V14H11Z"></path>
-    </svg>
-  );
+  const onNav = (path: string) => {
+    navigate(path);
+  };
+  const { register, formState, handleSubmit } = useForm<UserLogin>();
+  const { isValid, isSubmitting } = formState;
+
+  //
+  const onSubmit = async (userLogin: UserLogin) => {
+    await wait(1000);
+    console.log(userLogin);
+    UserService.isLogin = true;
+    onNav(RoutesName.dashboard);
+  };
 
   return (
     <>
@@ -55,20 +53,53 @@ const Login: React.FC = () => {
                 </div>
 
                 <div className="mx-auto max-w-xs">
-                  <InputComponent
-                    type="text"
-                    name="email"
-                    placeholder="Entrer votre email"
-                    svgIcon={envelopeIcon}
-                  />
-                  <InputComponent
-                    type="password"
-                    name="password"
-                    placeholder="Entrer votre mot de passe"
-                    svgIcon={LockIcon}
-                    className="mt-7"
-                  />
-                  <ButtonComponent textButton="Connexion" />
+                  {/* Fomulaire de Connexion */}
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <Stack spacing={3}>
+                      <TextField
+                        type="text"
+                        variant="standard"
+                        label="email"
+                        {...register("email", {
+                          required: true,
+                        })}
+                        color="success"
+                        slotProps={{
+                          input: {
+                            endAdornment: (
+                              <MailOutlineOutlinedIcon color="success" />
+                            ),
+                          },
+                        }}
+                      ></TextField>
+
+                      <TextField
+                        type="password"
+                        variant="standard"
+                        label="password"
+                        {...register("password", {
+                          required: true,
+                        })}
+                        color="success"
+                        slotProps={{
+                          input: {
+                            endAdornment: (
+                              <PasswordOutlinedIcon color="success" />
+                            ),
+                          },
+                        }}
+                      ></TextField>
+                      <Button
+                        color="success"
+                        disabled={!isValid}
+                        type="submit"
+                        variant="outlined"
+                      >
+                        Connexion
+                      </Button>
+                      {isSubmitting && <LinearProgress color="success" />}
+                    </Stack>
+                  </form>
 
                   <p className="mt-6 text-xs text-gray-600 text-center">
                     I agree to abide by Cartesian Kinetics
