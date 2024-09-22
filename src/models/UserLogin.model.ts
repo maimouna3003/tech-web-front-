@@ -1,4 +1,4 @@
-export default interface UserLogin {
-  email: String;
-  password: String;
+export default interface IUserLogin {
+  userEmail: string;
+  password: string;
 }

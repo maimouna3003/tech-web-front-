@@ -1,28 +1,49 @@
 import IModule from "../models/Module.model";
-import DataTest from "./dataTeste";
+import IUtilisateur from "../models/Utilisateur.model";
+import { updModuleApi } from "../restApi/Module.api";
 
-//::::
-export const getModuleById = (id: string | undefined): IModule | undefined => {
-  return DataTest.DataModules.find((module) => module.id === id);
+//Traitement d'affectation Module
+export const affectationUserModuleService = (
+  module: IModule,
+  user: IUtilisateur
+) => {
+  user = { ...user, modules: [], groupes: [] };
+  let listUsers = module.users;
+  listUsers?.push(user);
+  module = { ...module, users: listUsers };
+
+  updModuleApi(module);
 };
 
-//Update module in local
-export const addModule = (moduleInput: IModule): Boolean => {
-  DataTest.DataModules.push(moduleInput);
-  return true;
-};
-
-//Update module in local
-export const updModule = (moduleInput: IModule): Boolean => {
-  DataTest.DataModules = DataTest.DataModules.map((module) =>
-    module.id === moduleInput.id ? moduleInput : module
+//Suupression d'affectation Module
+export const delAffectationUserModuleService = (
+  module: IModule,
+  user: IUtilisateur
+) => {
+  let listUsers = module.users;
+  listUsers = listUsers?.filter(
+    (userAffectation) => userAffectation.id !== user.id
   );
-  return true;
-};
+  module = { ...module, users: listUsers };
 
-//Delete module in local
-export const delModuleById = (id: string | undefined): void => {
-  DataTest.DataModules = DataTest.DataModules.filter(
-    (module) => module.id !== id
-  );
+  updModuleApi(module);
+};
+//Traitement user no affecter Module
+export const getUsersNoAffectationModuleService = (
+  module: IModule,
+  users: IUtilisateur[]
+): IUtilisateur[] => {
+  const usersAffected = module.users;
+  const usersNoAffected: IUtilisateur[] = [];
+  users.forEach((users) => {
+    let retrouver = false;
+    usersAffected?.forEach((userAffected) => {
+      if (users.id === userAffected.id) {
+        retrouver = true;
+      }
+    });
+    if (!retrouver) usersNoAffected.push(users);
+  });
+
+  return usersNoAffected;
 };

@@ -1,6 +1,7 @@
 import {
   Box,
   Checkbox,
+  IconButton,
   Paper,
   Stack,
   Table,
@@ -11,17 +12,44 @@ import {
   TableRow,
 } from "@mui/material";
 import React from "react";
-import { useParams } from "react-router-dom";
-import { CustomeTable } from "../../services/helpers.service";
-import DataTest from "../../services/dataTeste";
+import { useNavigate, useParams } from "react-router-dom";
+import { CustomeTable } from "../../services/Helpers.service";
 import Moment from "react-moment";
-
-const SeancePage: React.FC = () => {
+import { useEffectuerReducer } from "../../strore/reducer/Effectuer.reducer";
+import { useSignals } from "@preact/signals-react/runtime";
+import ReplyAllIcon from "@mui/icons-material/ReplyAll";
+import { updEffectuerApi } from "../../restApi/Effecture.api";
+const EffectuerPage: React.FC = () => {
   const { id_groupe } = useParams();
+  const navigate = useNavigate();
+
+  const onNav = () => {
+    navigate(-1);
+  };
+
+  const effectuerReducer = useEffectuerReducer();
+  const effectues = effectuerReducer.getSeancesByGroupe(id_groupe);
+  const heureEffectuer = effectuerReducer.getEffectuerTrue(id_groupe);
+  const heureNoEffectuer = effectuerReducer.getEffectuerFalse(id_groupe);
+  useSignals();
   return (
     <>
       <Stack spacing={3}>
-        <Stack>SEANCE List</Stack>
+        <Stack>
+          <IconButton onClick={() => onNav()}>
+            <ReplyAllIcon fontSize="large" color="info" />
+          </IconButton>
+        </Stack>
+        <Stack direction="row" spacing={3}>
+          <Stack>SEANCE List: </Stack>
+          <Stack>
+            Heures total effectuées = {heureEffectuer.value.length * 2} - heures
+          </Stack>
+          <Stack>
+            Heures total Non effectuées = {heureNoEffectuer.value.length * 2} -
+            heures
+          </Stack>
+        </Stack>
         <Box
           component="section"
           sx={{ m: 10, p: 4, border: "1px dashed #F2901D" }}
@@ -47,26 +75,38 @@ const SeancePage: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {DataTest.DataEffectuer.map((effectue) => (
+                {effectues.map((effectue) => (
                   <TableRow
                     key={effectue.id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell style={CustomeTable.styleBody} align="left">
-                      {effectue.seance?.nom.toUpperCase()}
+                      Seance - {effectue.seance?.nom?.toString()}
                     </TableCell>
                     <TableCell style={CustomeTable.styleBody} align="center">
                       <Checkbox
                         size="large"
-                        defaultChecked={effectue.effectuer}
+                        checked={effectue.effectuer}
                         color="success"
+                        onClick={() => {
+                          updEffectuerApi({
+                            ...effectue,
+                            effectuer: !effectue.effectuer,
+                          });
+                        }}
                       />
                     </TableCell>
                     <TableCell style={CustomeTable.styleBody} align="center">
                       <Checkbox
                         size="large"
-                        defaultChecked={!effectue.effectuer}
+                        checked={!effectue.effectuer}
                         color="error"
+                        onClick={() => {
+                          updEffectuerApi({
+                            ...effectue,
+                            effectuer: !effectue.effectuer,
+                          });
+                        }}
                       />
                     </TableCell>
                     <TableCell style={CustomeTable.styleBody} align="center">
@@ -83,4 +123,4 @@ const SeancePage: React.FC = () => {
   );
 };
 
-export default SeancePage;
+export default EffectuerPage;

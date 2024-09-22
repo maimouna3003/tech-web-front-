@@ -85,7 +85,7 @@ export default class DataTest {
           seance: {
             effectues: [],
             id: "a3f36a91-9ed6-4bc8-8226-3549f7078cda",
-            nom: "new seance 74",
+            nom: 2,
             createdAt: "2024-09-14T01:03:58.639+00:00",
             updatedAt: "2024-09-14T01:03:58.639+00:00",
           },
@@ -100,7 +100,7 @@ export default class DataTest {
           seance: {
             effectues: [],
             id: "a3f36a91-9ed6-4bc8-8226-3549f7078cda",
-            nom: "new seance 74",
+            nom: 3,
             createdAt: "2024-09-14T01:03:58.639+00:00",
             updatedAt: "2024-09-14T01:03:58.639+00:00",
           },
@@ -147,7 +147,7 @@ export default class DataTest {
       seances: [
         {
           id: "a3f36a91-9ed6-4bc8-8226-3549f7078cda",
-          nom: "new seance 74",
+          nom: 2,
           effectues: [
             {
               id: "hbzefbezhbf",
@@ -193,7 +193,7 @@ export default class DataTest {
         },
         {
           id: "dzdzadzad",
-          nom: "seance 2",
+          nom: 2,
           effectues: [],
           createdAt: "2024-09-14T01:03:58.639+00:00",
           updatedAt: "2024-09-14T01:03:58.639+00:00",
@@ -212,7 +212,7 @@ export default class DataTest {
       seances: [
         {
           id: "fc164047-9f6d-4fbd-97a1-624957e33e38",
-          nom: "seance 5",
+          nom: 4,
           effectues: [],
           createdAt: "2024-09-14T01:01:39.298+00:00",
           updatedAt: "2024-09-14T01:01:39.298+00:00",
@@ -230,7 +230,28 @@ export default class DataTest {
       effectuer: true,
       seance: {
         id: "a3f36a91-9ed6-4bc8-8226-3549f7078cda",
-        nom: "new seance 74",
+        nom: 1,
+        createdAt: "2024-09-14T01:03:58.639+00:00",
+        updatedAt: "2024-09-14T01:03:58.639+00:00",
+      },
+      groupe: {
+        id: "6048b6a9-0947-4a76-9bb7-26eab28257a3",
+        nom: "UAB4",
+        heureTotalEffectue: 0,
+        heureTotalNonEffectue: 0,
+        createdAt: "2024-09-14T01:39:37.851+00:00",
+        updatedAt: "2024-09-14T01:39:37.851+00:00",
+      },
+      createdAt: "2024-09-14T01:03:58.639+00:00",
+      updatedAt: "2024-09-14T01:03:58.639+00:00",
+    },
+    {
+      id: "kdbdbzebd",
+      date: "2024-09-14T01:03:58.639+00:00",
+      effectuer: false,
+      seance: {
+        id: "a3f36a91-9ed6-4bc8-8226-3549f7078cda",
+        nom: 2,
         createdAt: "2024-09-14T01:03:58.639+00:00",
         updatedAt: "2024-09-14T01:03:58.639+00:00",
       },
@@ -246,18 +267,39 @@ export default class DataTest {
       updatedAt: "2024-09-14T01:03:58.639+00:00",
     },
     {
-      id: "kdbdbzebd",
+      id: "oazdjadnjbdh",
       date: "2024-09-14T01:03:58.639+00:00",
       effectuer: false,
       seance: {
         id: "a3f36a91-9ed6-4bc8-8226-3549f7078cda",
-        nom: "new seance 74",
+        nom: 3,
         createdAt: "2024-09-14T01:03:58.639+00:00",
         updatedAt: "2024-09-14T01:03:58.639+00:00",
       },
       groupe: {
-        id: "cca571ee-6fb0-4cf2-9532-bf6b06fc0beb",
-        nom: "UAB9",
+        id: "6656953b-a7a5-4ffb-be6c-f4b6b0de6eb7",
+        nom: "UAB0",
+        heureTotalEffectue: 0,
+        heureTotalNonEffectue: 0,
+        createdAt: "2024-09-14T01:39:37.851+00:00",
+        updatedAt: "2024-09-14T01:39:37.851+00:00",
+      },
+      createdAt: "2024-09-14T01:03:58.639+00:00",
+      updatedAt: "2024-09-14T01:03:58.639+00:00",
+    },
+    {
+      id: "DZDZDKZDJ",
+      date: "2024-09-14T01:03:58.639+00:00",
+      effectuer: false,
+      seance: {
+        id: "a3f36a91-9ed6-4bc8-8226-3549f7078cda",
+        nom: 4,
+        createdAt: "2024-09-14T01:03:58.639+00:00",
+        updatedAt: "2024-09-14T01:03:58.639+00:00",
+      },
+      groupe: {
+        id: "6656953b-a7a5-4ffb-be6c-f4b6b0de6eb7",
+        nom: "UAB0",
         heureTotalEffectue: 0,
         heureTotalNonEffectue: 0,
         createdAt: "2024-09-14T01:39:37.851+00:00",

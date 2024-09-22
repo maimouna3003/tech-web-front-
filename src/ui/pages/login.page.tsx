@@ -3,30 +3,39 @@ import illustrationLogin from "../../image/close-up-person-working-alternative-e
 import logoApp from "../../image/Logo Tutor Planner.png";
 import { useForm } from "react-hook-form";
 import UserLogin from "../../models/UserLogin.model";
-import { Button, LinearProgress, Stack, TextField } from "@mui/material";
+import { Alert, Button, LinearProgress, Stack, TextField } from "@mui/material";
 import MailOutlineOutlinedIcon from "@mui/icons-material/MailOutlineOutlined";
 import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
-import { wait } from "@testing-library/user-event/dist/utils";
 import { useNavigate } from "react-router-dom";
-import { RoutesName } from "../../services/helpers.service";
-import UserService from "../../services/user.service";
+import { RoutesName } from "../../services/Helpers.service";
+import { login } from "../../restApi/Auth.api";
+import {
+  StateReducer,
+  useStateReducer,
+} from "../../strore/reducer/State.reducer";
+import { StateEnum } from "../../strore/State";
+import { useSignals } from "@preact/signals-react/runtime";
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const onNav = (path: string) => {
     navigate(path);
   };
+  const stateReducer = useStateReducer();
+
   const { register, formState, handleSubmit } = useForm<UserLogin>();
   const { isValid, isSubmitting } = formState;
 
   //
   const onSubmit = async (userLogin: UserLogin) => {
-    await wait(1000);
-    console.log(userLogin);
-    UserService.isLogin = true;
-    onNav(RoutesName.dashboard);
+    stateReducer.stateApp(StateEnum.Loading);
+    const response = await login(userLogin);
+    if (response) {
+      stateReducer.stateApp(StateEnum.Loaded);
+      onNav(RoutesName.dashboard);
+    }
   };
-
+  useSignals();
   return (
     <>
       <div className="min-w-screen min-h-screen flex items-center justify-center px-5 py-5">
@@ -60,7 +69,7 @@ const Login: React.FC = () => {
                         type="text"
                         variant="standard"
                         label="email"
-                        {...register("email", {
+                        {...register("userEmail", {
                           required: true,
                         })}
                         color="success"
@@ -99,6 +108,12 @@ const Login: React.FC = () => {
                       </Button>
                       {isSubmitting && <LinearProgress color="success" />}
                     </Stack>
+                    {/* MESSAGE ERROR */}
+                    {StateReducer.stateSignal.value === StateEnum.Error && (
+                      <Alert severity="error">
+                        {StateReducer.errorSignal.value}
+                      </Alert>
+                    )}
                   </form>
 
                   <p className="mt-6 text-xs text-gray-600 text-center">

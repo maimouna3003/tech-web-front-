@@ -10,14 +10,13 @@ import {
   TableRow,
 } from "@mui/material";
 import React from "react";
-import { CustomeTable, RoutesName } from "../../../services/helpers.service";
+import { CustomeTable, RoutesName } from "../../../services/Helpers.service";
 import Moment from "react-moment";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import { delGroupeById } from "../../../services/groupe.service";
 import { useNavigate } from "react-router-dom";
 import IGroupe from "../../../models/Groupe.model";
+import { useGroupeReducer } from "../../../strore/reducer/Groupe.reducer";
 
 interface GroupeTabComponentProps {
   groupes: IGroupe[];
@@ -29,6 +28,9 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({ groupes }) => {
   const onNav = (path: string) => {
     navigate(path);
   };
+  //
+  const groupeReducer = useGroupeReducer();
+
   return (
     <Stack spacing={3}>
       <TableContainer component={Paper}>
@@ -61,7 +63,7 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({ groupes }) => {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell style={CustomeTable.styleBody} align="left">
-                  {groupe.nom.toUpperCase()}
+                  {groupe.nom?.toUpperCase()}
                 </TableCell>
                 <TableCell style={CustomeTable.styleBody} align="center">
                   {groupe.heureTotalEffectue} - heures
@@ -74,11 +76,13 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({ groupes }) => {
                 </TableCell>
                 <TableCell style={CustomeTable.styleBody} align="center">
                   <IconButton
-                    onClick={() => onNav(`${RoutesName.seances}/${groupe.id}`)}
+                    onClick={() =>
+                      onNav(`${RoutesName.effectuer}/${groupe.id}`)
+                    }
                   >
                     <VisibilityOutlinedIcon fontSize="large" color="info" />
                   </IconButton>
-                  <IconButton
+                  {/* <IconButton
                     onClick={() =>
                       onNav(`${RoutesName.groupe.groupeUpd}/${groupe.id}`)
                     }
@@ -87,8 +91,10 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({ groupes }) => {
                       fontSize="large"
                       color="info"
                     />
-                  </IconButton>
-                  <IconButton onClick={() => delGroupeById(groupe.id)}>
+                  </IconButton> */}
+                  <IconButton
+                    onClick={() => groupeReducer.delEntityById(groupe.id)}
+                  >
                     <DeleteOutlinedIcon fontSize="large" color="error" />
                   </IconButton>
                 </TableCell>

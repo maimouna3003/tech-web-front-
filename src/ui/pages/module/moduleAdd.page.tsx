@@ -1,10 +1,9 @@
 import React from "react";
 import IModule from "../../../models/Module.model";
-import { wait } from "@testing-library/user-event/dist/utils";
 import ModuleFormComponent from "../../components/module/moduleForm.component";
 import { useNavigate } from "react-router-dom";
-import { RoutesName } from "../../../services/helpers.service";
-import { addModule } from "../../../services/Module.service";
+import { RoutesName } from "../../../services/Helpers.service";
+import { addModuleApi } from "../../../restApi/Module.api";
 
 interface ModuleAddPageProps {}
 
@@ -22,9 +21,9 @@ const ModuleAddPage: React.FC<ModuleAddPageProps> = () => {
   };
 
   const onSubmit = async (moduleInput: IModule) => {
-    await wait(1000);
     //add and nav
-    if (addModule(moduleInput)) onNav(RoutesName.module.modules);
+    const idModule = await addModuleApi(moduleInput);
+    if (idModule) onNav(`${RoutesName.module.moduleDetails}/${idModule}`);
   };
 
   return (

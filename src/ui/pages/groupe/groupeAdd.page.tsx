@@ -1,36 +1,36 @@
 import React from "react";
 import IGroupe from "../../../models/Groupe.model";
-import { wait } from "@testing-library/user-event/dist/utils";
 import GroupeFormComponent from "../../components/groupe/groupeForm.component";
 import { useNavigate } from "react-router-dom";
-import { addGroupe } from "../../../services/groupe.service";
-import { RoutesName } from "../../../services/helpers.service";
+import { RoutesName } from "../../../services/Helpers.service";
+import { useGroupeReducer } from "../../../strore/reducer/Groupe.reducer";
 
 interface GroupeAddPageProps {}
 
 const GroupeAddPage: React.FC<GroupeAddPageProps> = () => {
   const navigate = useNavigate();
-
   const onNav = (path: string) => {
     navigate(path);
   };
+  const groupeReducer = useGroupeReducer();
 
-  let groupe: IGroupe = {
+  let newGroupe: IGroupe = {
     nom: "",
     heureTotalEffectue: 0,
     heureTotalNonEffectue: 0,
     //module:{ }
   };
 
-  const onSubmit = async (groupeInput: IGroupe) => {
-    await wait(1000);
+  //On submit
+  const onSubmit = (groupeInput: IGroupe) => {
     //Add and nav
-    if (addGroupe(groupeInput)) onNav(RoutesName.groupe.groupes);
+    groupeInput = { ...groupeInput, id: Date.now().toString() };
+    if (groupeReducer.addEntity(groupeInput)) onNav(RoutesName.groupe.groupes);
   };
 
   return (
     <>
-      <GroupeFormComponent onSubmit={onSubmit} groupe={groupe} />
+      <GroupeFormComponent onSubmit={onSubmit} groupe={newGroupe} />
     </>
   );
 };

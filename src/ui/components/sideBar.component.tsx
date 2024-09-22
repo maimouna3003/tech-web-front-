@@ -3,7 +3,11 @@ import React from "react";
 import logoApp from "../../image/logo-blanc.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import MenuItemComponent from "./menuItem.component";
-import { RoutesName } from "../../services/helpers.service";
+import { RoutesName } from "../../services/Helpers.service";
+import { LinearProgress } from "@mui/material";
+import { StateReducer } from "../../strore/reducer/State.reducer";
+import { StateEnum } from "../../strore/State";
+import { useSignals } from "@preact/signals-react/runtime";
 
 const SideNavBar: React.FC = () => {
   const location = useLocation();
@@ -12,6 +16,7 @@ const SideNavBar: React.FC = () => {
   const onNav = (path: string) => {
     navigate(path);
   };
+  useSignals();
 
   const isActive = (path: string) => location.pathname === path;
   return (
@@ -30,7 +35,13 @@ const SideNavBar: React.FC = () => {
           className="md:flex md:flex-col md:items-stretch md:opacity-100 md:relative md:mt-4 md:shadow-none shadow absolute top-0 left-0 right-0 z-40 overflow-y-auto overflow-x-hidden h-auto items-center flex-1 rounded hidden"
           id="example-collapse-sidebar"
         >
-          <hr className="my-4 md:min-w-full" />
+          {StateReducer.stateSignal.value === StateEnum.Loading && (
+            <LinearProgress color="info" />
+          )}
+          {StateReducer.stateSignal.value === StateEnum.Loaded && (
+            <hr className="my-4 md:min-w-full" />
+          )}
+
           <ul className="md:flex-col md:min-w-full flex flex-col list-none">
             <MenuItemComponent
               onClickNav={() => {
@@ -69,7 +80,7 @@ const SideNavBar: React.FC = () => {
               isActive={isActive(RoutesName.module.modules)} // Actif
             />
 
-            <MenuItemComponent
+            {/* <MenuItemComponent
               onClickNav={() => {
                 onNav(RoutesName.groupe.groupes);
               }}
@@ -86,7 +97,7 @@ const SideNavBar: React.FC = () => {
                 </svg>
               }
               isActive={isActive(RoutesName.groupe.groupes)} // Actif
-            />
+            /> */}
 
             <MenuItemComponent
               onClickNav={() => {
@@ -126,7 +137,6 @@ const SideNavBar: React.FC = () => {
               isActive={isActive(RoutesName.parametres)} // Actif
             />
           </ul>
-
           <div className="logout absolute bottom-10 w-full px-6">
             <button
               className="bg-white text-center w-full px-3 rounded-2xl h-14 relative text-black text-xl font-semibold group"
