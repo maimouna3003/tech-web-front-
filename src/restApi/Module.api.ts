@@ -1,34 +1,68 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import IGroupe from "../models/Groupe.model";
 import IModule from "../models/Module.model";
 import ISeance from "../models/Seance.model";
-import IUtilisateur from "../models/Utilisateur.model";
-import { FetchConfigs } from "../services/Helpers.service";
+import {
+  customReqHeaders,
+  FetchUrl,
+  getTxtError,
+  handlerErrorCustom,
+} from "../services/Helpers.service";
 import { useModuleReducer } from "../strore/reducer/Module.reducer";
-import { useStateReducer } from "../strore/reducer/State.reducer";
 import { StateEnum } from "../strore/State";
+import { delGroupesApi } from "./Groupe.api";
 import { addSeancesApi, delSeancesApi } from "./Seance.api";
 
-const stateReducer = useStateReducer();
 const moduleReducer = useModuleReducer();
 
 //get Module
 export const getModulesAPi = async (): Promise<boolean> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
-    const requeste = await fetch(`${FetchConfigs.url}/`, {
+    moduleReducer.setState(StateEnum.Loading);
+    console.log(" entrer getModulesAPi");
+
+    const responseReq = await fetch(`${FetchUrl}/`, {
       method: "GET",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
     });
 
-    const response = await requeste.json();
+    handlerErrorCustom("getModulesAPi", responseReq);
+
+    const response = await responseReq.json();
     moduleReducer.initEntities(response);
-    stateReducer.stateApp(StateEnum.Loaded);
+    moduleReducer.setState(StateEnum.Loaded);
+    console.log(" sorti getModulesAPi");
 
     return true;
   } catch (error) {
-    console.log("error" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error getModulesAPi" + error);
+    moduleReducer.setMessage(`${getTxtError()} de la recupération des modules`);
+    moduleReducer.setState(StateEnum.Error);
+    return false;
+  }
+};
+
+//Get Module Api
+export const getModuleByIdAPi = async (id: string): Promise<boolean> => {
+  try {
+    moduleReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/module/${id}`, {
+      method: "GET",
+      headers: customReqHeaders(),
+    });
+
+    handlerErrorCustom("getModuleByIdAPi", responseReq);
+
+    const response = await responseReq.json();
+    moduleReducer.getSignalEntities().value = { ...response };
+    moduleReducer.setState(StateEnum.Loaded);
+    return true;
+  } catch (error) {
+    console.log("error getModuleByIdAPi" + error);
+    moduleReducer.setMessage(
+      `${getTxtError()} de la recupération de la module`
+    );
+    moduleReducer.setState(StateEnum.Error);
     return false;
   }
 };
@@ -38,14 +72,16 @@ export const addModuleApi = async (
   module: IModule
 ): Promise<boolean | string | undefined> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
-    const requeste = await fetch(`${FetchConfigs.url}/module/add`, {
+    moduleReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/module/add`, {
       method: "POST",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(module),
     });
 
-    const response = await requeste.json();
+    handlerErrorCustom("addModuleApi", responseReq);
+
+    const response = await responseReq.json();
     let newModule: IModule = { ...response };
     let nbrSeance = 1;
     if (newModule.heure !== undefined) {
@@ -64,17 +100,15 @@ export const addModuleApi = async (
 
     //Inserte Seances
     const responseSeance = await addSeancesApi(listSeances);
+
     newModule = { ...newModule, seances: responseSeance };
-
     if (responseSeance) moduleReducer.addEntity(newModule);
-
-    stateReducer.stateApp(StateEnum.Loaded);
-
+    moduleReducer.setState(StateEnum.Loaded);
     return newModule.id;
   } catch (error) {
-    console.log("error" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error addModuleApi" + error);
+    moduleReducer.setMessage(`${getTxtError()} de l'ajout de la module`);
+    moduleReducer.setState(StateEnum.Error);
     return false;
   }
 };
@@ -82,23 +116,22 @@ export const addModuleApi = async (
 //Upd Module
 export const updModuleApi = async (module: IModule): Promise<boolean> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
+    moduleReducer.setState(StateEnum.Loading);
     module = { ...module, groupes: [], seances: [] };
-    const requeste = await fetch(`${FetchConfigs.url}/module/update`, {
+    const responseReq = await fetch(`${FetchUrl}/module/update`, {
       method: "PUT",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(module),
     });
 
-    const response = await requeste.json();
-    moduleReducer.updEntity(response);
-    stateReducer.stateApp(StateEnum.Loaded);
-
+    handlerErrorCustom("updModuleApi", responseReq);
+    moduleReducer.setState(StateEnum.Loaded);
+    getModulesAPi();
     return true;
   } catch (error) {
-    console.log("error" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error updModuleApi" + error);
+    moduleReducer.setMessage(`${getTxtError()} de la mise à jour de la module`);
+    moduleReducer.setState(StateEnum.Error);
     return false;
   }
 };
@@ -106,29 +139,46 @@ export const updModuleApi = async (module: IModule): Promise<boolean> => {
 //Del Module
 export const delModuleApi = async (module: IModule): Promise<boolean> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
+    moduleReducer.setState(StateEnum.Loading);
+    const groupes: IGroupe[] | undefined = module.groupes?.map((groupe) => ({
+      ...groupe,
+      user: {},
+    }));
+    const responseDelGroupes = await delGroupesApi(groupes ?? []);
+    if (responseDelGroupes) {
+      const seances: ISeance[] | undefined = module.seances?.map((seance) => ({
+        ...seance,
+        effectues: [],
+      }));
+      //Delete Cascade
+      const responseDeleteSeances = await delSeancesApi(seances ?? []);
+      const moduleDelete: IModule = {
+        ...module,
+        seances: [],
+        users: [],
+        groupes: [],
+      };
 
-    //Delete Cascade
-    const responseDeleteSeances = await delSeancesApi(module.seances ?? []);
-    const moduleDelete: IModule = { ...module, seances: [] };
-    if (responseDeleteSeances) {
-      const requeste = await fetch(`${FetchConfigs.url}/module/delete`, {
-        method: "DELETE",
-        headers: FetchConfigs.headers,
-        body: JSON.stringify(moduleDelete),
-      });
+      if (responseDeleteSeances) {
+        const responseReq = await fetch(`${FetchUrl}/module/delete`, {
+          method: "DELETE",
+          headers: customReqHeaders(),
+          body: JSON.stringify(moduleDelete),
+        });
 
-      if (requeste.status !== 200) {
-        throw new Error();
+        handlerErrorCustom("delModuleApi", responseReq);
+
+        moduleReducer.delEntityById(module.id);
+        moduleReducer.setState(StateEnum.Loaded);
       }
-      moduleReducer.delEntityById(module.id);
-      stateReducer.stateApp(StateEnum.Loaded);
     }
     return true;
   } catch (error) {
-    console.log("error module  == " + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error delModuleApi" + error);
+    moduleReducer.setMessage(
+      `${getTxtError()} de la suppresssion de la module`
+    );
+    moduleReducer.setState(StateEnum.Error);
     return false;
   }
 };

@@ -92,6 +92,8 @@ const EffectuerPage: React.FC = () => {
                           updEffectuerApi({
                             ...effectue,
                             effectuer: !effectue.effectuer,
+                            groupe: { id: effectue.groupe?.id },
+                            seance: { id: effectue.seance?.id },
                           });
                         }}
                       />
@@ -105,6 +107,8 @@ const EffectuerPage: React.FC = () => {
                           updEffectuerApi({
                             ...effectue,
                             effectuer: !effectue.effectuer,
+                            groupe: { id: effectue.groupe?.id },
+                            seance: { id: effectue.seance?.id },
                           });
                         }}
                       />

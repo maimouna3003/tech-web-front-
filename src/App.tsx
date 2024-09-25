@@ -2,41 +2,54 @@ import "./App.css";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import ModulePage from "./ui/pages/module/module.page";
 import DashboardPage from "./ui/pages/home.page";
-import { Grid2 } from "@mui/material";
+import { Grid2, Stack } from "@mui/material";
 import GroupePage from "./ui/pages/groupe/groupe.page";
 import SideNavBar from "./ui/components/sideBar.component";
 import { RoutesName } from "./services/Helpers.service";
 import PlanningPage from "./ui/pages/planning.page";
-import ParametrePage from "./ui/pages/parametre.page";
 import GroupeUpdPage from "./ui/pages/groupe/groupeUpd.page";
 import GroupeAddPage from "./ui/pages/groupe/groupeAdd.page";
 import ModuleUpdPage from "./ui/pages/module/moduleUpd.page";
 import ModuleAddPage from "./ui/pages/module/moduleAdd.page";
 import Login from "./ui/pages/login.page";
 import EffectuerPage from "./ui/pages/effectuer.page";
-import { StateReducer } from "./strore/reducer/State.reducer";
 import { useSignals } from "@preact/signals-react/runtime";
 import { getModulesAPi } from "./restApi/Module.api";
 import ModuleDetailsPage from "./ui/pages/module/moduleDetails.page";
-import { getEffcetuerAPi } from "./restApi/Effecture.api";
+import { getEffectuerAPi } from "./restApi/Effecture.api";
 import { getUsersAPi } from "./restApi/User.api";
+import UtilisateursPage from "./ui/pages/users/utilisateurs.page";
+import { useCurrentUserReducer } from "./strore/reducer/CurrentUser.reducer";
+import StateProgress from "./ui/components/state/stateProgress.component";
 
 const PageLayout: React.FC = () => {
   //Api
-  getModulesAPi();
-  getEffcetuerAPi();
-  getUsersAPi();
   const isConnected = localStorage.getItem("isConnected");
+  const currentUser = useCurrentUserReducer();
+  if (
+    isConnected === "true" ||
+    currentUser.getCurrentUserSignal().value.isConnected
+  ) {
+    getModulesAPi();
+    getEffectuerAPi();
+    getUsersAPi();
+  }
   useSignals();
   return (
     <>
       <Grid2 container spacing={10}>
         <Grid2 size={2}>
-          {(isConnected === "true" ||
-            StateReducer.currentUserSignal.value.isConnected) && <SideNavBar />}
+          <SideNavBar />
         </Grid2>
-        <Grid2 size={10}>
-          <Outlet />
+        <Grid2 direction={"column"} size={10}>
+          <Grid2 size={1}>
+            <div style={{ height: 50 }}>
+              <StateProgress />
+            </div>
+          </Grid2>
+          <Grid2 size={11}>
+            <Outlet />
+          </Grid2>
         </Grid2>
       </Grid2>
     </>
@@ -78,7 +91,7 @@ const routes = createBrowserRouter([
         path: `${RoutesName.effectuer}/:id_groupe`,
         element: <EffectuerPage />,
       },
-      { path: RoutesName.parametres, element: <ParametrePage /> },
+      { path: RoutesName.utilisateurs, element: <UtilisateursPage /> },
     ],
   },
 ]);

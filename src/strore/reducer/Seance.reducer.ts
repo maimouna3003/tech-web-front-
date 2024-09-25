@@ -5,9 +5,16 @@ import ISeance from "../../models/Seance.model";
 class SeanceReducer extends GeneriqueReducer<ISeance> {
   static instanceStore: SeanceReducer | null = null;
 
-  public static seancesSignal = useStore().store.entities.seanceStore.seances;
+  private static seanceStore = useStore().store.entities.seanceStore;
+  private static stateSignal = SeanceReducer.seanceStore.state;
+  private static messageSignal = SeanceReducer.seanceStore.message;
+  private static seancesSignal = SeanceReducer.seanceStore.seances;
   constructor() {
-    super(SeanceReducer.seancesSignal);
+    super(
+      SeanceReducer.stateSignal,
+      SeanceReducer.messageSignal,
+      SeanceReducer.seancesSignal
+    );
   }
 
   //Get seance  by module

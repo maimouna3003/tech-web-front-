@@ -7,19 +7,43 @@ import ISeance from "../models/Seance.model";
 import IUtilisateur from "../models/Utilisateur.model";
 
 export interface State {
-  state: Signal<StateEnum>;
-  entities: Entities;
-  message: Signal<string | null>;
-  error: Signal<string | null>;
+  entities: StateEntities;
   currentUser: Signal<ICurrentUser>;
+  stateApp: StateApp;
 }
 
-export interface Entities {
-  moduleStore: { modules: Signal<IModule[]>; module: Signal<IModule | null> };
-  groupeStore: { groupes: Signal<IGroupe[]>; groupe: Signal<IGroupe | null> };
-  effectuerStore: { effectues: Signal<IEffectuee[]> };
-  seanceStore: { seances: Signal<ISeance[]> };
-  userStore: { users: Signal<IUtilisateur[]> };
+export interface StateEntities {
+  moduleStore: {
+    state: Signal<StateEnum>;
+    message: Signal<string | null>;
+    modules: Signal<IModule[]>;
+    module: Signal<IModule | null>;
+  };
+  groupeStore: {
+    state: Signal<StateEnum>;
+    message: Signal<string | null>;
+    groupes: Signal<IGroupe[]>;
+    groupe: Signal<IGroupe | null>;
+  };
+  effectuerStore: {
+    message: Signal<string | null>;
+    state: Signal<StateEnum>;
+    effectues: Signal<IEffectuee[]>;
+  };
+  seanceStore: {
+    state: Signal<StateEnum>;
+    message: Signal<string | null>;
+    seances: Signal<ISeance[]>;
+  };
+  userStore: {
+    state: Signal<StateEnum>;
+    message: Signal<string | null>;
+    users: Signal<IUtilisateur[]>;
+  };
+}
+export interface StateApp {
+  state: Signal<StateEnum>;
+  message: Signal<string | null>;
 }
 
 export enum StateEnum {

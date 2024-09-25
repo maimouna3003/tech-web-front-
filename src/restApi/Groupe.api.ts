@@ -1,87 +1,140 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import IGroupe from "../models/Groupe.model";
-import { FetchConfigs } from "../services/Helpers.service";
+import {
+  customReqHeaders,
+  FetchUrl,
+  getTxtError,
+  handlerErrorCustom,
+} from "../services/Helpers.service";
 import { useGroupeReducer } from "../strore/reducer/Groupe.reducer";
-import { useStateReducer } from "../strore/reducer/State.reducer";
 import { StateEnum } from "../strore/State";
+import { delEffectuersApi, getEffectuerAPi } from "./Effecture.api";
 import { getModulesAPi } from "./Module.api";
 
-const stateReducer = useStateReducer();
 const groupeReducer = useGroupeReducer();
 
 //Add Groupes
 export const addGroupesApi = async (groupes: IGroupe[]): Promise<IGroupe[]> => {
   try {
-    console.log("json Groues" + JSON.stringify(groupes));
-
-    const requeste = await fetch(`${FetchConfigs.url}/groupes/add`, {
+    groupeReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/groupes/add`, {
       method: "POST",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(groupes),
     });
 
-    const response = await requeste.json();
-    console.log("json" + JSON.stringify(response));
+    handlerErrorCustom("addGroupesApi", responseReq);
+
+    const response = await responseReq.json();
     const listNewGroupe: IGroupe[] = [...response];
-    console.log("liste groupe created" + response);
-    getModulesAPi();
+    groupeReducer.setState(StateEnum.Loaded);
     return listNewGroupe;
   } catch (error) {
-    console.log("error groupe add" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error addGroupesApi" + error);
+    groupeReducer.setMessage(`${getTxtError()} de la recupération des groupes`);
+    groupeReducer.setState(StateEnum.Error);
     return [];
   }
 };
 
-//Del Groupes
-export const delGroupeApi = async (
-  idModule: string,
-  groupe: IGroupe
-): Promise<boolean> => {
+//Upd Groupes
+export const updGroupesApi = async (groupe: IGroupe) => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
-
-    const requeste = await fetch(`${FetchConfigs.url}/groupe/delete`, {
-      method: "DELETE",
-      headers: FetchConfigs.headers,
+    groupeReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/groupe/update`, {
+      method: "PUT",
+      headers: customReqHeaders(),
       body: JSON.stringify(groupe),
     });
 
-    if (requeste.status !== 200) {
-      throw new Error();
-    }
-    groupeReducer.delEntityById(groupe.id);
-    stateReducer.stateApp(StateEnum.Loaded);
+    handlerErrorCustom("updGroupesApi", responseReq);
 
-    return true;
+    await responseReq.json();
+    getModulesAPi();
+    getEffectuerAPi();
+    // getModuleByIdAPi(groupe.module?.id ?? "");
+    // groupeReducer.updEntity(response);
+    groupeReducer.setState(StateEnum.Loaded);
   } catch (error) {
-    console.log("error groupe == " + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
-    return false;
+    console.log("error updGroupesApi" + error);
+    groupeReducer.setMessage(`${getTxtError()} de la mise à jour du groupe`);
+    groupeReducer.setState(StateEnum.Error);
   }
 };
 
 //Del Groupes
-export const delGroupesApi = async (groupes: IGroupe[]): Promise<boolean> => {
+export const delGroupeApi = async (groupe: IGroupe): Promise<boolean> => {
   try {
-    const requeste = await fetch(`${FetchConfigs.url}/groupe/delete/all`, {
-      method: "DELETE",
-      headers: FetchConfigs.headers,
-      body: JSON.stringify(groupes),
-    });
+    const responseDel = await delEffectuersApi(groupe.effectues ?? []);
+    if (responseDel) {
+      console.log(" entrer delGroupeApi");
 
-    if (requeste.status !== 200) {
-      throw new Error();
+      groupeReducer.setState(StateEnum.Loading);
+      groupe = { ...groupe, effectues: [] };
+      const responseReq = await fetch(`${FetchUrl}/groupe/delete`, {
+        method: "DELETE",
+        headers: customReqHeaders(),
+        body: JSON.stringify(groupe),
+      });
+
+      handlerErrorCustom("delGroupeApi", responseReq);
+
+      groupeReducer.setState(StateEnum.Loaded);
+      console.log(" sorti delGroupeApi");
+      getModulesAPi();
     }
-    // moduleReducer.delEntityById(module.id);
-
     return true;
   } catch (error) {
-    console.log("error groupe == " + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error delGroupeApi" + error);
+    groupeReducer.setMessage(`${getTxtError()} de la suppression du groupe`);
+    groupeReducer.setState(StateEnum.Error);
     return false;
   }
 };
+
+//Del Groupes and effectuer
+export const delGroupesApi = async (groupes: IGroupe[]): Promise<boolean> => {
+  try {
+    groupeReducer.setState(StateEnum.Loading);
+    groupes.forEach(async (groupe) => {
+      const res = await delEffectuersApi(groupe.effectues ?? []);
+      if (res) delGroupeApi(groupe);
+    });
+
+    return true;
+  } catch (error) {
+    console.log("error delGroupesApi" + error);
+    groupeReducer.setMessage(`${getTxtError()} de la suppression des groupes`);
+    groupeReducer.setState(StateEnum.Error);
+    return false;
+  }
+};
+
+// export const delGroupesApi = async (groupes: IGroupe[]): Promise<boolean> => {
+//   try {
+//     groupeReducer.setState(StateEnum.Loading);
+//     groupes.forEach((groupe) => {
+//       delEffectuersApi(groupe.effectues ?? []);
+//     });
+//     const groupesDel: IGroupe[] | undefined = groupes.map((groupe) => ({
+//       ...groupe,
+//       user: {},
+//       effectues: [],
+//     }));
+//     const responseReq = await fetch(`${FetchUrl}/groupe/delete/all`, {
+//       method: "DELETE",
+//       headers: customReqHeaders(),
+//       body: JSON.stringify(groupesDel),
+//     });
+
+//     handlerErrorCustom("delGroupesApi", responseReq);
+
+//     groupeReducer.setState(StateEnum.Loaded);
+//     return true;
+//   } catch (error) {
+//     console.log("error delGroupesApi" + error);
+//     groupeReducer.setMessage(`${getTxtError()} de la suppression des groupes`);
+//     groupeReducer.setState(StateEnum.Error);
+//     return false;
+//   }
+// };

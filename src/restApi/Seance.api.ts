@@ -1,60 +1,65 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import ISeance from "../models/Seance.model";
-import { FetchConfigs } from "../services/Helpers.service";
+import {
+  customReqHeaders,
+  FetchUrl,
+  getTxtError,
+  handlerErrorCustom,
+} from "../services/Helpers.service";
 import { useSeanceReducer } from "../strore/reducer/Seance.reducer";
-import { useStateReducer } from "../strore/reducer/State.reducer";
 import { StateEnum } from "../strore/State";
+import { delEffectuersApi, getEffectuerAPi } from "./Effecture.api";
+import { getModulesAPi } from "./Module.api";
 
-const stateReducer = useStateReducer();
 const seanceReducer = useSeanceReducer();
 
 //Add Seances
 export const addSeancesApi = async (seance: ISeance[]): Promise<ISeance[]> => {
   try {
-    const requeste = await fetch(`${FetchConfigs.url}/seances/add`, {
+    seanceReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/seances/add`, {
       method: "POST",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(seance),
     });
+    handlerErrorCustom("addSeancesApi", responseReq);
 
-    const response = await requeste.json();
+    const response = await responseReq.json();
     const listNewSeance: ISeance[] = [...response];
-    console.log("liste seance created" + response);
-
+    seanceReducer.setState(StateEnum.Loaded);
     return listNewSeance;
   } catch (error) {
-    console.log("error seance add" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error addSeancesApi" + error);
+    seanceReducer.setMessage(`${getTxtError()} de la recupération des seances`);
+    seanceReducer.setState(StateEnum.Error);
     return [];
   }
 };
 
 //Del Seances
-export const delSeanceApi = async (
-  idModule: string,
-  seance: ISeance
-): Promise<boolean> => {
+export const delSeanceApi = async (seance: ISeance): Promise<boolean> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
+    seanceReducer.setState(StateEnum.Loading);
+    const responseDel = await delEffectuersApi(seance.effectues ?? []);
 
-    const requeste = await fetch(`${FetchConfigs.url}/seance/delete`, {
-      method: "DELETE",
-      headers: FetchConfigs.headers,
-      body: JSON.stringify(seance),
-    });
+    if (responseDel) {
+      seance = { ...seance, effectues: [] };
+      const responseReq = await fetch(`${FetchUrl}/seance/delete`, {
+        method: "DELETE",
+        headers: customReqHeaders(),
+        body: JSON.stringify(seance),
+      });
 
-    if (requeste.status !== 200) {
-      throw new Error();
+      handlerErrorCustom("delSeanceApi", responseReq);
+      getEffectuerAPi();
+      getModulesAPi();
     }
-    seanceReducer.delEntityById(seance.id);
-    stateReducer.stateApp(StateEnum.Loaded);
-
+    seanceReducer.setState(StateEnum.Loaded);
     return true;
   } catch (error) {
-    console.log("error seance == " + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error delSeanceApi" + error);
+    seanceReducer.setMessage(`${getTxtError()} de la suppression de la seance`);
+    seanceReducer.setState(StateEnum.Error);
     return false;
   }
 };
@@ -62,22 +67,22 @@ export const delSeanceApi = async (
 //Del Seances
 export const delSeancesApi = async (seances: ISeance[]): Promise<boolean> => {
   try {
-    const requeste = await fetch(`${FetchConfigs.url}/seance/delete/all`, {
+    seanceReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/seance/delete/all`, {
       method: "DELETE",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(seances),
     });
 
-    if (requeste.status !== 200) {
-      throw new Error();
-    }
-    // moduleReducer.delEntityById(module.id);
+    handlerErrorCustom("delSeancesApi", responseReq);
 
+    // moduleReducer.delEntityById(module.id);
+    seanceReducer.setState(StateEnum.Loaded);
     return true;
   } catch (error) {
-    console.log("error seance == " + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error delSeancesApi" + error);
+    seanceReducer.setMessage(`${getTxtError()} de la suppression des seances`);
+    seanceReducer.setState(StateEnum.Error);
     return false;
   }
 };

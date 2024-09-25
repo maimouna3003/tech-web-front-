@@ -6,10 +6,17 @@ import GeneriqueReducer from "./Generique.reducer";
 class EffectuerReducer extends GeneriqueReducer<IEffectuee> {
   static instanceStore: EffectuerReducer | null = null;
 
-  public static effectuersSignal =
-    useStore().store.entities.effectuerStore.effectues;
+  private static effectuerStore = useStore().store.entities.effectuerStore;
+  private static stateSignal = EffectuerReducer.effectuerStore.state;
+  private static messageSignal = EffectuerReducer.effectuerStore.message;
+  private static effectuersSignal = EffectuerReducer.effectuerStore.effectues;
+
   constructor() {
-    super(EffectuerReducer.effectuersSignal);
+    super(
+      EffectuerReducer.stateSignal,
+      EffectuerReducer.messageSignal,
+      EffectuerReducer.effectuersSignal
+    );
   }
 
   //Get seance effectuer by groupe

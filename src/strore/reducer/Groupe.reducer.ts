@@ -6,17 +6,26 @@ import GeneriqueReducer from "./Generique.reducer";
 class GroupeReducer extends GeneriqueReducer<IGroupe> {
   static instanceStore: GroupeReducer | null = null;
 
-  public static groupesSignal = useStore().store.entities.groupeStore.groupes;
+  private static groupeStore = useStore().store.entities.groupeStore;
+  private static stateSignal = GroupeReducer.groupeStore.state;
+  private static messageSignal = GroupeReducer.groupeStore.message;
+  private static groupesSignal = GroupeReducer.groupeStore.groupes;
   constructor() {
-    super(GroupeReducer.groupesSignal);
+    super(
+      GroupeReducer.stateSignal,
+      GroupeReducer.messageSignal,
+      GroupeReducer.groupesSignal
+    );
   }
 
   //Calcule heure effectuer et non effectuer groupe in store
   public getHeuresModule = (groupes: IGroupe[]): IGroupe[] => {
-    const useReducer = useEffectuerReducer();
+    const useEffectueReducer = useEffectuerReducer();
     groupes = groupes.map((groupe) => {
-      const effectuer = useReducer.getEffectuerTrue(groupe.id).value.length;
-      const nonEffectuer = useReducer.getEffectuerFalse(groupe.id).value.length;
+      const effectuer = useEffectueReducer.getEffectuerTrue(groupe.id).value
+        .length;
+      const nonEffectuer = useEffectueReducer.getEffectuerFalse(groupe.id).value
+        .length;
       groupe = {
         ...groupe,
         heureTotalEffectue: effectuer * 2,
@@ -38,40 +47,3 @@ export const useGroupeReducer = (): GroupeReducer => {
   }
   return new GroupeReducer();
 };
-
-// export default class GroupeReducer {
-//   //
-//   public static store = useStore();
-
-//   //Get store groupes
-//   public static getStoreGroupes(): Signal<IGroupe[]> {
-//     let {
-//       store: {
-//         entities: {
-//           groupeStore: { groupes },
-//         },
-//       },
-//     } = this.store;
-
-//     return groupes;
-//   }
-
-//   //Add groupe in store
-//   public static addGroupe(groupe: IGroupe) {
-//     const storeGroupes = this.getStoreGroupes();
-
-//     storeGroupes.value = [...storeGroupes.value, groupe];
-//     return true;
-//   }
-
-//   //Delete groupe in store
-//   public static delGroupeById = (id: string | undefined): boolean => {
-//     const storeGroupes = this.getStoreGroupes();
-
-//     storeGroupes.value = storeGroupes.value.filter(
-//       (groupe) => groupe.nom !== id
-//     );
-
-//     return true;
-//   };
-// }

@@ -1,5 +1,10 @@
 import {
+  Box,
+  Button,
+  FormControl,
   IconButton,
+  InputLabel,
+  NativeSelect,
   Paper,
   Stack,
   Table,
@@ -16,20 +21,33 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { useNavigate } from "react-router-dom";
 import IGroupe from "../../../models/Groupe.model";
-import { useGroupeReducer } from "../../../strore/reducer/Groupe.reducer";
+import PersonRemoveOutlinedIcon from "@mui/icons-material/PersonRemoveOutlined";
+import IUtilisateur from "../../../models/Utilisateur.model";
+import { useSignals } from "@preact/signals-react/runtime";
 
+import { StateEnum } from "../../../strore/State";
+import { delGroupeApi, updGroupesApi } from "../../../restApi/Groupe.api";
+import { useGroupeReducer } from "../../../strore/reducer/Groupe.reducer";
 interface GroupeTabComponentProps {
+  idModule?: string;
   groupes: IGroupe[];
+  usersInModule?: IUtilisateur[];
 }
 
-const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({ groupes }) => {
+const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({
+  idModule,
+  groupes,
+  usersInModule,
+}) => {
   const navigate = useNavigate();
-
   const onNav = (path: string) => {
     navigate(path);
   };
   //
   const groupeReducer = useGroupeReducer();
+
+  useSignals();
+  let idTuteur = "null";
 
   return (
     <Stack spacing={3}>
@@ -39,6 +57,9 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({ groupes }) => {
             <TableRow>
               <TableCell style={CustomeTable.styleThead} align="center">
                 Nom
+              </TableCell>
+              <TableCell style={CustomeTable.styleThead} align="center">
+                Tuteur
               </TableCell>
               <TableCell style={CustomeTable.styleThead} align="center">
                 Heure Total Effectués
@@ -65,6 +86,59 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({ groupes }) => {
                 <TableCell style={CustomeTable.styleBody} align="left">
                   {groupe.nom?.toUpperCase()}
                 </TableCell>
+                <TableCell style={CustomeTable.styleBody} align="left">
+                  {groupe.user?.nom === undefined && (
+                    <>
+                      <Box sx={{ minWidth: 120 }}>
+                        <FormControl fullWidth>
+                          <InputLabel
+                            variant="standard"
+                            htmlFor="uncontrolled-native"
+                          >
+                            Tuteurs
+                          </InputLabel>
+                          <NativeSelect
+                            onChange={({ target: { value } }) => {
+                              idTuteur = value;
+                            }}
+                          >
+                            <option value="null">Selectionner</option>
+
+                            {usersInModule?.map((user, index) => (
+                              <option key={user.id} value={user.id}>
+                                {user.nom} - {user.prenom}
+                              </option>
+                            ))}
+                          </NativeSelect>
+                          <Button
+                            type="submit"
+                            onClick={() => {
+                              if (idTuteur === "null") {
+                                groupeReducer.setMessage(
+                                  "veillez selectionner un tuteur"
+                                );
+                                groupeReducer.setState(StateEnum.Error);
+                              }
+                              //
+                              groupe = {
+                                ...groupe,
+                                user: { id: idTuteur },
+                                effectues: [],
+                                module: { id: idModule },
+                              };
+                              updGroupesApi(groupe);
+                            }}
+                            sx={{ marginTop: 2 }}
+                            variant="text"
+                          >
+                            Affecter
+                          </Button>
+                        </FormControl>
+                      </Box>
+                    </>
+                  )}
+                  {groupe.user?.nom} {groupe.user?.prenom}
+                </TableCell>
                 <TableCell style={CustomeTable.styleBody} align="center">
                   {groupe.heureTotalEffectue} - heures
                 </TableCell>
@@ -75,28 +149,43 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({ groupes }) => {
                   <Moment format="YYYY/MM/DD">{groupe.createdAt}</Moment>
                 </TableCell>
                 <TableCell style={CustomeTable.styleBody} align="center">
-                  <IconButton
-                    onClick={() =>
-                      onNav(`${RoutesName.effectuer}/${groupe.id}`)
-                    }
-                  >
-                    <VisibilityOutlinedIcon fontSize="large" color="info" />
-                  </IconButton>
-                  {/* <IconButton
-                    onClick={() =>
-                      onNav(`${RoutesName.groupe.groupeUpd}/${groupe.id}`)
-                    }
-                  >
-                    <DriveFileRenameOutlineOutlinedIcon
-                      fontSize="large"
-                      color="info"
-                    />
-                  </IconButton> */}
-                  <IconButton
-                    onClick={() => groupeReducer.delEntityById(groupe.id)}
-                  >
-                    <DeleteOutlinedIcon fontSize="large" color="error" />
-                  </IconButton>
+                  {/* BTN Remove tuteur */}
+                  {!(groupe.user?.nom === undefined) && (
+                    <IconButton
+                      onClick={() => {
+                        groupe = {
+                          ...groupe,
+                          user: null,
+                          effectues: [],
+                          module: { id: idModule },
+                        };
+                        updGroupesApi(groupe);
+                      }}
+                    >
+                      <PersonRemoveOutlinedIcon
+                        fontSize="large"
+                        color="error"
+                      />
+                    </IconButton>
+                  )}
+
+                  {/* BTN details */}
+                  {!(groupe.user?.nom === undefined) && (
+                    <IconButton
+                      onClick={() =>
+                        onNav(`${RoutesName.effectuer}/${groupe.id}`)
+                      }
+                    >
+                      <VisibilityOutlinedIcon fontSize="large" color="info" />
+                    </IconButton>
+                  )}
+
+                  {/* BTN delete */}
+                  {groupe.user?.nom === undefined && (
+                    <IconButton onClick={() => delGroupeApi(groupe)}>
+                      <DeleteOutlinedIcon fontSize="large" color="error" />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

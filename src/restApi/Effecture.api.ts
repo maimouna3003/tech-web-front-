@@ -1,31 +1,38 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import IEffectuee from "../models/Effectuee.model";
-import { FetchConfigs } from "../services/Helpers.service";
+import {
+  customReqHeaders,
+  FetchUrl,
+  getTxtError,
+  handlerErrorCustom,
+} from "../services/Helpers.service";
 import { useEffectuerReducer } from "../strore/reducer/Effectuer.reducer";
-import { useStateReducer } from "../strore/reducer/State.reducer";
 import { StateEnum } from "../strore/State";
+import { getModulesAPi } from "./Module.api";
 
-const stateReducer = useStateReducer();
 const effectuerReducer = useEffectuerReducer();
 
-//get Effcetuer
-export const getEffcetuerAPi = async (): Promise<boolean> => {
+//get Effectuer
+export const getEffectuerAPi = async (): Promise<boolean> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
-    const requeste = await fetch(`${FetchConfigs.url}/effectues`, {
+    effectuerReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/effectues`, {
       method: "GET",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
     });
 
-    const response = await requeste.json();
-    effectuerReducer.initEntities(response);
-    stateReducer.stateApp(StateEnum.Loaded);
+    handlerErrorCustom("getEffcetuerAPi", responseReq);
 
+    const response = await responseReq.json();
+    effectuerReducer.initEntities(response);
+    effectuerReducer.setState(StateEnum.Loaded);
     return true;
   } catch (error) {
-    console.log("error" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error getEffectuerAPi" + error);
+    effectuerReducer.setMessage(
+      `${getTxtError()} de la recupération des effectueés`
+    );
+    effectuerReducer.setState(StateEnum.Error);
     return false;
   }
 };
@@ -33,24 +40,24 @@ export const getEffcetuerAPi = async (): Promise<boolean> => {
 //Add Effectuers
 export const addEffectuersApi = async (
   effectuees: IEffectuee[]
-): Promise<IEffectuee[]> => {
+): Promise<void> => {
   try {
-    const requeste = await fetch(`${FetchConfigs.url}/effectuees/add`, {
+    effectuerReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/effectuees/add`, {
       method: "POST",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(effectuees),
     });
 
-    const response = await requeste.json();
-    const listNewEffectuer: IEffectuee[] = [...response];
-    console.log("liste effectuer created" + response);
+    handlerErrorCustom("addEffectuersApi", responseReq);
 
-    return listNewEffectuer;
+    await responseReq.json();
+    getModulesAPi();
+    effectuerReducer.setState(StateEnum.Loaded);
   } catch (error) {
-    console.log("error effectuer add" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
-    return [];
+    console.log("error addEffectuersApi" + error);
+    effectuerReducer.setMessage(`${getTxtError()} de l'ajout d'effectueés`);
+    effectuerReducer.setState(StateEnum.Error);
   }
 };
 
@@ -59,22 +66,25 @@ export const updEffectuerApi = async (
   effectuer: IEffectuee
 ): Promise<boolean> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
-    const requeste = await fetch(`${FetchConfigs.url}/effectuer/update`, {
+    effectuerReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/effectuer/update`, {
       method: "PUT",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(effectuer),
     });
 
-    const response = await requeste.json();
-    effectuerReducer.updEntity(response);
-    stateReducer.stateApp(StateEnum.Loaded);
+    handlerErrorCustom("updEffectuerApi", responseReq);
 
+    const response = await responseReq.json();
+    effectuerReducer.updEntity(response);
+    effectuerReducer.setState(StateEnum.Loaded);
     return true;
   } catch (error) {
-    console.log("error" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error updEffectuerApi" + error);
+    effectuerReducer.setMessage(
+      `${getTxtError()} de la mise à jour de l'effectué`
+    );
+    effectuerReducer.setState(StateEnum.Error);
     return false;
   }
 };
@@ -85,25 +95,24 @@ export const delEffectuerApi = async (
   effectuer: IEffectuee
 ): Promise<boolean> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
-
-    const requeste = await fetch(`${FetchConfigs.url}/effectuer/delete`, {
+    effectuerReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/effectuer/delete`, {
       method: "DELETE",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(effectuer),
     });
 
-    if (requeste.status !== 200) {
-      throw new Error();
-    }
-    effectuerReducer.delEntityById(effectuer.id);
-    stateReducer.stateApp(StateEnum.Loaded);
+    handlerErrorCustom("delEffectuerApi", responseReq);
 
+    effectuerReducer.delEntityById(effectuer.id);
+    effectuerReducer.setState(StateEnum.Loaded);
     return true;
   } catch (error) {
-    console.log("error effectuer == " + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error updEffectuerApi" + error);
+    effectuerReducer.setMessage(
+      `${getTxtError()} de la suppression de l'effectué`
+    );
+    effectuerReducer.setState(StateEnum.Error);
     return false;
   }
 };
@@ -113,22 +122,25 @@ export const delEffectuersApi = async (
   effectuers: IEffectuee[]
 ): Promise<boolean> => {
   try {
-    const requeste = await fetch(`${FetchConfigs.url}/effectuer/delete/all`, {
+    effectuerReducer.setState(StateEnum.Loading);
+    console.log(" entrez delEffectuersApi");
+    const responseReq = await fetch(`${FetchUrl}/effectuer/delete/all`, {
       method: "DELETE",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(effectuers),
     });
 
-    if (requeste.status !== 200) {
-      throw new Error();
-    }
-    // moduleReducer.delEntityById(module.id);
+    handlerErrorCustom("delEffectuersApi", responseReq);
 
+    effectuerReducer.setState(StateEnum.Loaded);
+    console.log(" sorti delEffectuersApi");
     return true;
   } catch (error) {
-    console.log("error effectuer == " + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error updEffectuerApi" + error);
+    effectuerReducer.setMessage(
+      `${getTxtError()} de la suppression des éffectuées`
+    );
+    effectuerReducer.setState(StateEnum.Error);
     return false;
   }
 };

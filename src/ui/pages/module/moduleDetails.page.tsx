@@ -15,11 +15,11 @@ import IGroupe from "../../../models/Groupe.model";
 import { addGroupesApi } from "../../../restApi/Groupe.api";
 import IEffectuee from "../../../models/Effectuee.model";
 import { addEffectuersApi } from "../../../restApi/Effecture.api";
-import { useStateReducer } from "../../../strore/reducer/State.reducer";
 import { StateEnum } from "../../../strore/State";
 import UserTabComponent from "../../components/user/userList.component";
 import { useUserReducer } from "../../../strore/reducer/User.reducer";
 import { getUsersNoAffectationModuleService } from "../../../services/Module.service";
+import SkeletonTabComponent from "../../components/state/skeleton.component";
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -43,19 +43,20 @@ function CustomTabPanel(props: TabPanelProps) {
 }
 
 const ModuleDetailsPage: React.FC = () => {
+  console.log("Page module details");
   const { id_module } = useParams();
-  const storeModule = useModuleReducer();
-  const storeUser = useUserReducer();
-  const users = storeUser.getStoreEntities();
-  const module = storeModule.getEntityById(id_module);
-  const storeGroupes = useGroupeReducer();
-  const groupesHeures = storeGroupes.getHeuresModule(module?.groupes ?? []);
-  const stateReducer = useStateReducer();
+  const moduleReducer = useModuleReducer();
+  const userReducer = useUserReducer();
+  const usersSignal = userReducer.getSignalEntities();
+  const module = moduleReducer.getEntityById(id_module);
+  const groupeReducer = useGroupeReducer();
+  const groupesHeures = groupeReducer.getHeuresModule(module?.groupes ?? []);
   const usersNoAffected = getUsersNoAffectationModuleService(
     module ?? {},
-    users.value
+    usersSignal.value
   );
   useSignals();
+  // getModuleByIdAPi(id_module ?? "");
 
   const [value, setValue] = React.useState(0);
 
@@ -68,7 +69,7 @@ const ModuleDetailsPage: React.FC = () => {
 
   //
   const onSubmit = async ({ nbr, initial }: any) => {
-    stateReducer.stateApp(StateEnum.Loading);
+    moduleReducer.setState(StateEnum.Loading);
     let groupes: IGroupe[] = [];
     for (let index = 0; index < nbr; index++) {
       const nbrNom = index + 1;
@@ -81,7 +82,6 @@ const ModuleDetailsPage: React.FC = () => {
 
       groupes.push(groupe);
     }
-    console.log(JSON.stringify(groupes));
     const listGroupes = await addGroupesApi(groupes);
     let listEffectuer: IEffectuee[] = [];
 
@@ -98,11 +98,9 @@ const ModuleDetailsPage: React.FC = () => {
       });
     });
 
-    const responseEffectuer = await addEffectuersApi(listEffectuer);
-    console.log("liest effectuer" + responseEffectuer);
-    stateReducer.stateApp(StateEnum.Loaded);
+    await addEffectuersApi(listEffectuer);
   };
-
+  const stateModule = moduleReducer.getState();
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -119,14 +117,18 @@ const ModuleDetailsPage: React.FC = () => {
             <Tab label="Seances" />
             <Tab label="Groupes" />
             <Tab label="Tuteurs" />
-            <Tab label="Affectation" />
+            <Tab label="Affectation Module" />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          <SeanceTabComponent
-            idModule={module?.id ?? ""}
-            seances={module?.seances ?? []}
-          />
+          {stateModule.value === StateEnum.Loaded && (
+            <SeanceTabComponent
+              idModule={module?.id ?? ""}
+              seances={module?.seances ?? []}
+            />
+          )}
+
+          {stateModule.value === StateEnum.Loading && <SkeletonTabComponent />}
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <Stack spacing={3}>
@@ -169,7 +171,11 @@ const ModuleDetailsPage: React.FC = () => {
               </form>
             </Stack>
             <Stack>
-              <GroupeTabComponent groupes={groupesHeures} />
+              <GroupeTabComponent
+                idModule={module?.id ?? ""}
+                groupes={groupesHeures}
+                usersInModule={module?.users ?? []}
+              />
             </Stack>
           </Stack>
         </CustomTabPanel>
@@ -178,14 +184,16 @@ const ModuleDetailsPage: React.FC = () => {
             isAffected={false}
             module={module ?? {}}
             users={module?.users ?? []}
+            isPageUsers={false}
           />
         </CustomTabPanel>
-        {/* Affectation */}
+        {/* Users pour Affectation */}
         <CustomTabPanel value={value} index={3}>
           <UserTabComponent
             module={module ?? {}}
             isAffected={true}
             users={usersNoAffected}
+            isPageUsers={false}
           />
         </CustomTabPanel>
       </Box>

@@ -14,7 +14,6 @@ import React from "react";
 import { CustomeTable } from "../../../services/Helpers.service";
 import Moment from "react-moment";
 import ISeance from "../../../models/Seance.model";
-import { useSeanceReducer } from "../../../strore/reducer/Seance.reducer";
 import { delSeanceApi } from "../../../restApi/Seance.api";
 
 interface SeanceTabComponentProps {
@@ -27,7 +26,6 @@ const SeanceTabComponent: React.FC<SeanceTabComponentProps> = ({
   seances,
 }) => {
   //
-  const seanceReducer = useSeanceReducer();
 
   return (
     <Stack spacing={3}>
@@ -60,7 +58,7 @@ const SeanceTabComponent: React.FC<SeanceTabComponentProps> = ({
                   <Moment format="YYYY/MM/DD">{seance.createdAt}</Moment>
                 </TableCell>
                 <TableCell style={CustomeTable.styleBody} align="center">
-                  <IconButton onClick={() => delSeanceApi(idModule, seance)}>
+                  <IconButton onClick={() => delSeanceApi(seance)}>
                     <DeleteOutlinedIcon fontSize="large" color="error" />
                   </IconButton>
                 </TableCell>

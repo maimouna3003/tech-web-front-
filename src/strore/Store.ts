@@ -1,8 +1,7 @@
 import { effect, signal } from "@preact/signals-react";
-import { Entities, State, StateEnum } from "./State";
+import { State, StateEntities, StateEnum } from "./State";
 import IGroupe from "../models/Groupe.model";
 import IModule from "../models/Module.model";
-import DataTest from "../services/DataTeste";
 import IEffectuee from "../models/Effectuee.model";
 import ISeance from "../models/Seance.model";
 import IUtilisateur from "../models/Utilisateur.model";
@@ -12,15 +11,16 @@ export class Store {
 
   constructor() {
     effect(() => {
-      console.log("action ffffff");
+      console.log("constructor Store");
     });
   }
   //
   public store: State = {
-    state: signal(StateEnum.Initial),
+    stateApp: {
+      state: signal<StateEnum>(StateEnum.Initial),
+      message: signal<string | null>(null),
+    },
     entities: initEntitiesStore(),
-    error: signal(null),
-    message: signal(null),
     currentUser: signal({ email: null, isConnected: false, profil: null }),
   };
 }
@@ -36,23 +36,33 @@ export const useStore = (): Store => {
 };
 
 //Initial store
-const initEntitiesStore = (): Entities => {
+const initEntitiesStore = (): StateEntities => {
   return {
     groupeStore: {
-      groupes: signal<IGroupe[]>(DataTest.DataGroupes),
+      state: signal<StateEnum>(StateEnum.Initial),
+      message: signal<string | null>(null),
+      groupes: signal<IGroupe[]>([]),
       groupe: signal<IGroupe | null>(null),
     },
     moduleStore: {
+      state: signal<StateEnum>(StateEnum.Initial),
+      message: signal<string | null>(null),
       modules: signal<IModule[]>([]),
       module: signal<IModule | null>(null),
     },
     effectuerStore: {
+      state: signal<StateEnum>(StateEnum.Initial),
+      message: signal<string | null>(null),
       effectues: signal<IEffectuee[]>([]),
     },
     seanceStore: {
+      state: signal<StateEnum>(StateEnum.Initial),
+      message: signal<string | null>(null),
       seances: signal<ISeance[]>([]),
     },
     userStore: {
+      state: signal<StateEnum>(StateEnum.Initial),
+      message: signal<string | null>(null),
       users: signal<IUtilisateur[]>([]),
     },
   };

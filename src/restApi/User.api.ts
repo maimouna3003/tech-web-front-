@@ -1,31 +1,35 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { FetchConfigs } from "../services/Helpers.service";
+import {
+  customReqHeaders,
+  FetchUrl,
+  getTxtError,
+  handlerErrorCustom,
+} from "../services/Helpers.service";
 import { useUserReducer } from "../strore/reducer/User.reducer";
-import { useStateReducer } from "../strore/reducer/State.reducer";
 import { StateEnum } from "../strore/State";
 import IUtilisateur from "../models/Utilisateur.model";
 
-const stateReducer = useStateReducer();
 const userReducer = useUserReducer();
 
 //get User
 export const getUsersAPi = async (): Promise<boolean> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
-    const requeste = await fetch(`${FetchConfigs.url}/users`, {
+    userReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/users`, {
       method: "GET",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
     });
 
-    const response = await requeste.json();
-    userReducer.initEntities(response);
-    stateReducer.stateApp(StateEnum.Loaded);
+    handlerErrorCustom("getUsersAPi", responseReq);
 
+    const response = await responseReq.json();
+    userReducer.initEntities(response);
+    userReducer.setState(StateEnum.Loaded);
     return true;
   } catch (error) {
-    console.log("error user" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error getUsersAPi" + error);
+    userReducer.setMessage(`${getTxtError()} de la recupération des seances`);
+    userReducer.setState(StateEnum.Error);
     return false;
   }
 };
@@ -35,23 +39,25 @@ export const addUserApi = async (
   user: IUtilisateur
 ): Promise<boolean | IUtilisateur | undefined> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
-    const requeste = await fetch(`${FetchConfigs.url}/user/add`, {
+    userReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/user/add`, {
       method: "POST",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(user),
     });
 
-    const response = await requeste.json();
+    handlerErrorCustom("addUserApi", responseReq);
+
+    const response = await responseReq.json();
     let newUser: IUtilisateur = { ...response };
     userReducer.addEntity(newUser);
-
-    stateReducer.stateApp(StateEnum.Loaded);
+    getUsersAPi();
+    userReducer.setState(StateEnum.Loaded);
     return newUser;
   } catch (error) {
-    console.log("error" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error addUserApi" + error);
+    userReducer.setMessage(`${getTxtError()} de l'ajout de la seances`);
+    userReducer.setState(StateEnum.Error);
     return false;
   }
 };
@@ -59,22 +65,23 @@ export const addUserApi = async (
 //Upd User
 export const updUserApi = async (user: IUtilisateur): Promise<boolean> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
-    const requeste = await fetch(`${FetchConfigs.url}/user/update`, {
+    userReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/user/update`, {
       method: "PUT",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(user),
     });
 
-    const response = await requeste.json();
-    userReducer.updEntity(response);
-    stateReducer.stateApp(StateEnum.Loaded);
+    handlerErrorCustom("updUserApi", responseReq);
 
+    const response = await responseReq.json();
+    userReducer.updEntity(response);
+    userReducer.setState(StateEnum.Loaded);
     return true;
   } catch (error) {
-    console.log("error" + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error updUserApi" + error);
+    userReducer.setMessage(`${getTxtError()} de la mise à jour de la seances`);
+    userReducer.setState(StateEnum.Error);
     return false;
   }
 };
@@ -82,25 +89,22 @@ export const updUserApi = async (user: IUtilisateur): Promise<boolean> => {
 //Del User
 export const delUserApi = async (user: IUtilisateur): Promise<boolean> => {
   try {
-    stateReducer.stateApp(StateEnum.Loading);
-
-    //Delete
-    const requeste = await fetch(`${FetchConfigs.url}/user/delete`, {
+    userReducer.setState(StateEnum.Loading);
+    const responseReq = await fetch(`${FetchUrl}/user/delete`, {
       method: "DELETE",
-      headers: FetchConfigs.headers,
+      headers: customReqHeaders(),
       body: JSON.stringify(user),
     });
 
-    if (requeste.status !== 200) {
-      throw new Error();
-    }
+    handlerErrorCustom("delUserApi", responseReq);
+
     userReducer.delEntityById(user.id);
-    stateReducer.stateApp(StateEnum.Loaded);
+    userReducer.setState(StateEnum.Loaded);
     return true;
   } catch (error) {
-    console.log("error user  == " + error);
-    stateReducer.addErrorApp("Une erreur c'est produit !");
-    stateReducer.stateApp(StateEnum.Error);
+    console.log("error delUserApi" + error);
+    userReducer.setMessage(`${getTxtError()} de la suppression de la seances`);
+    userReducer.setState(StateEnum.Error);
     return false;
   }
 };

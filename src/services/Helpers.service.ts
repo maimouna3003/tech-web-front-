@@ -1,3 +1,6 @@
+import { logOut } from "../restApi/Auth.api";
+import { useStateAppReducer } from "../strore/reducer/StateApp.reducer";
+
 //CONFIG DATA TABLE
 export const CustomeTable = {
   styleThead: { fontSize: 20, fontWeight: "bold", height: 70 },
@@ -21,13 +24,12 @@ export const RoutesName = {
   },
   planning: "/planning",
   effectuer: "/effectuer",
-  parametres: "/parametres",
+  utilisateurs: "/utilisateurs",
 };
 
 //CONFIG REQUESTES
-const customReqHeaders = (): Headers => {
+export const customReqHeaders = (): Headers => {
   const token = localStorage.getItem("token");
-
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("Accept", "application/json");
@@ -35,7 +37,7 @@ const customReqHeaders = (): Headers => {
 
   return myHeaders;
 };
-const customReqHeadersLogin = (): Headers => {
+export const customReqHeadersLogin = (): Headers => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("Accept", "application/json");
@@ -43,8 +45,26 @@ const customReqHeadersLogin = (): Headers => {
   return myHeaders;
 };
 
-export const FetchConfigs = {
-  url: process.env.REACT_APP_API_URL ?? "",
-  headers: customReqHeaders(),
-  headersLogin: customReqHeadersLogin(),
+export const handlerErrorCustom = (
+  endPoint: string,
+  response: Response
+): Error | void => {
+  if (!(response.status >= 200 && response.status <= 300)) {
+    if (response.status === 401) {
+      logOut();
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useStateAppReducer().setMessageAppSignal(
+        "Token expiré veillez genéré un nouveau token "
+      );
+    }
+    console.log(
+      `Error_Endpoint : ${endPoint} \n Status_code : ${response.status}`
+    );
+    throw new Error();
+  }
 };
+
+export const getTxtError = (): string => {
+  return "Une erreur c'est produit lors";
+};
+export const FetchUrl = process.env.REACT_APP_API_URL ?? "";

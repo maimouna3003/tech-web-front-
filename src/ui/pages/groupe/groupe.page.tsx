@@ -2,33 +2,20 @@ import React from "react";
 import GroupeTabComponent from "../../components/groupe/groupeTabList.component";
 import { Box, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { FetchConfigs, RoutesName } from "../../../services/Helpers.service";
+import { RoutesName } from "../../../services/Helpers.service";
 import { useSignals } from "@preact/signals-react/runtime";
 import { useGroupeReducer } from "../../../strore/reducer/Groupe.reducer";
 
 interface GroupePageProps {}
 
 const GroupePage: React.FC<GroupePageProps> = () => {
-  const url = process.env.REACT_APP_API_URL ?? "";
-  // fetch(`${url}/login`, {
-  //   method: "POST",
-  //   headers: FetchConfigs.headers,
-  //   body: JSON.stringify({
-  //     userEmail: "ecm@gmail3",
-  //     password: "password3",
-  //   }),
-  // })
-  //   .then((response) => response.json())
-  //   .then((response) => console.log(response))
-  //   .catch((err) => console.error(err));
-  console.log("++++appeler");
   const navigate = useNavigate();
 
   const onNav = (path: string) => {
     navigate(path);
   };
 
-  const storeGroupes = useGroupeReducer().getStoreEntities();
+  const groupesSignal = useGroupeReducer().getSignalEntities();
   useSignals();
 
   return (
@@ -56,7 +43,7 @@ const GroupePage: React.FC<GroupePageProps> = () => {
           component="section"
           sx={{ m: 10, p: 4, border: "1px dashed #F2901D" }}
         >
-          <GroupeTabComponent groupes={storeGroupes.value} />
+          <GroupeTabComponent groupes={groupesSignal.value} />
         </Box>
       </Stack>
     </>

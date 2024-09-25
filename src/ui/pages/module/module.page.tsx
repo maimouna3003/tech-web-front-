@@ -15,11 +15,9 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { useNavigate } from "react-router-dom";
 import { useModuleReducer } from "../../../strore/reducer/Module.reducer";
 import { useSignals } from "@preact/signals-react/runtime";
-import SkeletonComponent from "../../components/skeleton.component";
-import { StateReducer } from "../../../strore/reducer/State.reducer";
 import { StateEnum } from "../../../strore/State";
 import { delModuleApi } from "../../../restApi/Module.api";
-import CardNotifyState from "../../components/cardNotifyState.component";
+import SkeletonTabComponent from "../../components/state/skeleton.component";
 
 const ModulePage: React.FC = () => {
   const navigate = useNavigate();
@@ -30,13 +28,11 @@ const ModulePage: React.FC = () => {
 
   //Reducer
   const moduleReducer = useModuleReducer();
-  const modules = moduleReducer.getStoreEntities();
+  const modulesSignal = moduleReducer.getSignalEntities();
   useSignals();
+  console.log("page list modules");
   return (
     <>
-      {/* CardNotifyState */}
-      <CardNotifyState />
-
       <Stack spacing={3}>
         <Stack
           sx={{ m: 5, p: 2, border: "1px dashed #F2901D" }}
@@ -56,10 +52,16 @@ const ModulePage: React.FC = () => {
             </Button>
           </Stack>
         </Stack>
+
         <Box
           component="section"
           sx={{ m: 10, p: 4, border: "1px dashed #F2901D" }}
         >
+          {/* SKELETON */}
+          {moduleReducer.getState().value === StateEnum.Loading && (
+            <SkeletonTabComponent />
+          )}
+          {/* FIN SKELETON */}
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
@@ -85,13 +87,9 @@ const ModulePage: React.FC = () => {
               </TableHead>
 
               <TableBody>
-                {/* SKELETON */}
-                <SkeletonComponent />
-                {/* FIN SKELETON */}
-
-                {StateReducer.stateSignal.value === StateEnum.Loaded && (
+                {moduleReducer.getState().value === StateEnum.Loaded && (
                   <>
-                    {modules.value.map((module) => (
+                    {modulesSignal.value.map((module) => (
                       <TableRow
                         key={module.id}
                         sx={{
@@ -126,11 +124,11 @@ const ModulePage: React.FC = () => {
                           align="center"
                         >
                           <IconButton
-                            onClick={() =>
+                            onClick={() => {
                               onNav(
                                 `${RoutesName.module.moduleDetails}/${module.id}`
-                              )
-                            }
+                              );
+                            }}
                           >
                             <VisibilityOutlinedIcon
                               fontSize="large"

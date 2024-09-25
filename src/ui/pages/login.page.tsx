@@ -9,10 +9,6 @@ import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
 import { useNavigate } from "react-router-dom";
 import { RoutesName } from "../../services/Helpers.service";
 import { login } from "../../restApi/Auth.api";
-import {
-  StateReducer,
-  useStateReducer,
-} from "../../strore/reducer/State.reducer";
 import { StateEnum } from "../../strore/State";
 import { useSignals } from "@preact/signals-react/runtime";
 const Login: React.FC = () => {
@@ -21,17 +17,14 @@ const Login: React.FC = () => {
   const onNav = (path: string) => {
     navigate(path);
   };
-  const stateReducer = useStateReducer();
 
   const { register, formState, handleSubmit } = useForm<UserLogin>();
   const { isValid, isSubmitting } = formState;
 
   //
   const onSubmit = async (userLogin: UserLogin) => {
-    stateReducer.stateApp(StateEnum.Loading);
     const response = await login(userLogin);
     if (response) {
-      stateReducer.stateApp(StateEnum.Loaded);
       onNav(RoutesName.dashboard);
     }
   };
@@ -109,11 +102,11 @@ const Login: React.FC = () => {
                       {isSubmitting && <LinearProgress color="success" />}
                     </Stack>
                     {/* MESSAGE ERROR */}
-                    {StateReducer.stateSignal.value === StateEnum.Error && (
+                    {/* {StateReducer.stateSignal.value === StateEnum.Error && (
                       <Alert severity="error">
                         {StateReducer.errorSignal.value}
                       </Alert>
-                    )}
+                    )} */}
                   </form>
 
                   <p className="mt-6 text-xs text-gray-600 text-center">

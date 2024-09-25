@@ -15,7 +15,7 @@ export const affectationUserModuleService = (
   updModuleApi(module);
 };
 
-//Suupression d'affectation Module
+//Supression d'affectation Module
 export const delAffectationUserModuleService = (
   module: IModule,
   user: IUtilisateur

@@ -10,26 +10,30 @@ import {
   TableRow,
 } from "@mui/material";
 import PersonRemoveOutlinedIcon from "@mui/icons-material/PersonRemoveOutlined";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import React from "react";
 import { CustomeTable } from "../../../services/Helpers.service";
 import IUtilisateur from "../../../models/Utilisateur.model";
-import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import IModule from "../../../models/Module.model";
+import { Profil, Sexe } from "../../../models/Enum";
 import {
   affectationUserModuleService,
   delAffectationUserModuleService,
 } from "../../../services/Module.service";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 
 interface UserTabComponentProps {
   module: IModule;
   users: IUtilisateur[];
   isAffected: boolean;
+  isPageUsers: boolean;
 }
 
 const UserTabComponent: React.FC<UserTabComponentProps> = ({
   module,
   users,
   isAffected,
+  isPageUsers,
 }) => {
   //
 
@@ -87,7 +91,12 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
                   {user.adresse}
                 </TableCell>
                 <TableCell style={CustomeTable.styleBody} align="left">
-                  {user.profil}
+                  {user.sexe === Sexe.FEMININ &&
+                    user.profil === Profil.TUTEUR && <> Tutrice</>}
+
+                  {!(
+                    user.sexe === Sexe.FEMININ && user.profil === Profil.TUTEUR
+                  ) && <> {user.profil}</>}
                 </TableCell>
                 <TableCell style={CustomeTable.styleBody} align="left">
                   {user.sexe}
@@ -99,27 +108,46 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
                   {user.telephone}
                 </TableCell>
 
-                <TableCell style={CustomeTable.styleBody} align="center">
-                  {isAffected && (
-                    <IconButton
-                      onClick={() => affectationUserModuleService(module, user)}
-                    >
-                      <PersonAddOutlinedIcon fontSize="large" color="success" />
-                    </IconButton>
-                  )}
-                  {!isAffected && (
+                {/* verifie si c'est la page user qui en fait appelle */}
+                {!isPageUsers && (
+                  <TableCell style={CustomeTable.styleBody} align="center">
+                    {isAffected && (
+                      <IconButton
+                        onClick={() =>
+                          affectationUserModuleService(module, user)
+                        }
+                      >
+                        <PersonAddOutlinedIcon
+                          fontSize="large"
+                          color="success"
+                        />
+                      </IconButton>
+                    )}
+                    {!isAffected && (
+                      <IconButton
+                        onClick={() =>
+                          delAffectationUserModuleService(module, user)
+                        }
+                      >
+                        <PersonRemoveOutlinedIcon
+                          fontSize="large"
+                          color="error"
+                        />
+                      </IconButton>
+                    )}
+                  </TableCell>
+                )}
+                {isPageUsers && (
+                  <TableCell style={CustomeTable.styleBody} align="center">
                     <IconButton
                       onClick={() =>
                         delAffectationUserModuleService(module, user)
                       }
                     >
-                      <PersonRemoveOutlinedIcon
-                        fontSize="large"
-                        color="error"
-                      />
+                      <DeleteOutlinedIcon fontSize="large" color="error" />
                     </IconButton>
-                  )}
-                </TableCell>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

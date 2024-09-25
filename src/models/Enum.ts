@@ -1,14 +1,16 @@
 export enum Profil {
-  ADMINISTRATEUR = "ADMINISTRATEUR",
-  RESPONSABLE = "RESPONSABLE",
-  TUTEUR = "TUTEUR",
+  ADMINISTRATEUR = "Admin",
+  RESPONSABLE = "Responsable",
+  TUTEUR = "Tuteur",
 }
+
 export enum Sexe {
-  MASCULIN = "MASCULIN",
-  FEMININ = "FEMININ",
+  MASCULIN = "M",
+  FEMININ = "F",
 }
 
 export enum Statut {
-  ACTIF = "ACTIF",
-  INACTIF = "INACTIF",
+  ACTIF = "Actif",
+  INACTIF = "Pause",
+  ARRETER = "Arreter",
 }

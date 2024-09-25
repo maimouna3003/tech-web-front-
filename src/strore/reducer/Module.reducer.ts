@@ -5,24 +5,19 @@ import GeneriqueReducer from "./Generique.reducer";
 class ModuleReducer extends GeneriqueReducer<IModule> {
   static instanceStore: ModuleReducer | null = null;
 
-  public static modulesSignal = useStore().store.entities.moduleStore.modules;
+  private static moduleStore = useStore().store.entities.moduleStore;
+  private static stateSignal = ModuleReducer.moduleStore.state;
+  private static messageSignal = ModuleReducer.moduleStore.message;
+  private static modulesSignal = ModuleReducer.moduleStore.modules;
+  private static moduleSignal = ModuleReducer.moduleStore.module;
   constructor() {
-    super(ModuleReducer.modulesSignal);
+    super(
+      ModuleReducer.stateSignal,
+      ModuleReducer.messageSignal,
+      ModuleReducer.modulesSignal,
+      ModuleReducer.moduleSignal
+    );
   }
-
-  //Delete entity in store
-  //TODO! A Continer...
-  // public delSeanceModuleById = (id: string | undefined): boolean => {
-  //   let model = this.getEntityById(id) ?? {
-  //     heure: 4,
-  //     nom: 4,
-  //     semaine: 4,
-  //     seances: [],
-  //   };
-  //   model.seances = model?.seances?.filter((entity) => entity.id !== id);
-
-  //   return true;
-  // };
 }
 
 //Use Store with patern Singleton
@@ -30,6 +25,7 @@ export const useModuleReducer = (): ModuleReducer => {
   //
   if (ModuleReducer.instanceStore === null) {
     ModuleReducer.instanceStore = new ModuleReducer();
+
     return ModuleReducer.instanceStore;
   }
   return new ModuleReducer();
