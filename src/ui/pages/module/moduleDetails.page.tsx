@@ -46,21 +46,27 @@ function CustomTabPanel(props: TabPanelProps) {
 
 const ModuleDetailsPage: React.FC = () => {
   console.log("Page module details");
+  const currentUserReducer = useCurrentUserReducer();
+  const user = currentUserReducer.getCurrentUserSignal().value.user;
+  useSignals();
   const { id_module } = useParams();
   const moduleReducer = useModuleReducer();
   const userReducer = useUserReducer();
   const usersSignal = userReducer.getSignalEntities();
+
   const module = moduleReducer.getEntityById(id_module);
   const groupeReducer = useGroupeReducer();
-  const groupesHeures = groupeReducer.getHeuresModule(module?.groupes ?? []);
   const usersNoAffected = getUsersNoAffectationModuleService(
     module ?? {},
     usersSignal.value
   );
-  useSignals();
-  const currentUserReducer = useCurrentUserReducer();
-  const user = currentUserReducer.getCurrentUserSignal().value.user;
-  // getModuleByIdAPi(id_module ?? "");
+  console.log(usersNoAffected.length);
+  let groupesHeures: IGroupe[] = [];
+  if (user?.profil === Profil.ADMINISTRATEUR) {
+    groupesHeures = groupeReducer.getHeuresModule(module?.groupes ?? []);
+  } else {
+    groupesHeures = groupeReducer.getHeuresModule(user?.groupes ?? []);
+  }
 
   const [value, setValue] = React.useState(0);
 

@@ -12,6 +12,7 @@ import { useCurrentUserReducer } from "../../strore/reducer/CurrentUser.reducer"
 import Moment from "react-moment";
 import { useSignals } from "@preact/signals-react/runtime";
 import {
+  getProgressionTermineForTuteur,
   getTotalSeanceForTuteur,
   getTotalSeanceNonTermineForTuteur,
   getTotalSeanceTermineForTuteur,
@@ -113,12 +114,21 @@ const DashboardPage: React.FC<DashboardProps> = () => {
           )}
 
           {/* Progression des groupes */}
-          {user?.groupes?.map((groupe, index) => (
-            <Stack key={index} spacing={1} sx={{ mt: 2 }}>
-              <Typography variant="subtitle2">{groupe.nom}</Typography>
-              <LinearProgress variant="determinate" value={(index + 1) * 25} />
-            </Stack>
-          ))}
+          {user?.groupes?.map((groupe, index) => {
+            const valuePourcentage = getProgressionTermineForTuteur(
+              groupe.effectues ?? []
+            );
+
+            return (
+              <Stack key={index} spacing={1} sx={{ mt: 2 }}>
+                <Typography variant="subtitle2">{groupe.nom}</Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={valuePourcentage}
+                />
+              </Stack>
+            );
+          })}
 
           {/* Générer rapport */}
           <Box

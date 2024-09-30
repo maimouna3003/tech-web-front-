@@ -34,10 +34,12 @@ const ModulePage: React.FC = () => {
   const user = currentUserReducer.getCurrentUserSignal().value.user;
   const moduleReducer = useModuleReducer();
   const modulesSignal = moduleReducer.getSignalEntities();
-  const modules = [];
-  // if (user?.profil === Profil.ADMINISTRATEUR) {
-  //   modules = user.modules
-  // }
+  let modules = [];
+  if (user?.profil === Profil.ADMINISTRATEUR) {
+    modules = modulesSignal.value;
+  } else {
+    modules = user?.modules ?? [];
+  }
   console.log("page list modules");
   return (
     <>
@@ -98,7 +100,7 @@ const ModulePage: React.FC = () => {
               <TableBody>
                 {moduleReducer.getState().value === StateEnum.Loaded && (
                   <>
-                    {modulesSignal.value.map((module) => (
+                    {modules.map((module) => (
                       <TableRow
                         key={module.id}
                         sx={{

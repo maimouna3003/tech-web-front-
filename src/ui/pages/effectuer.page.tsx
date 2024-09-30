@@ -19,6 +19,8 @@ import { useEffectuerReducer } from "../../strore/reducer/Effectuer.reducer";
 import { useSignals } from "@preact/signals-react/runtime";
 import ReplyAllIcon from "@mui/icons-material/ReplyAll";
 import { updEffectuerApi } from "../../restApi/Effecture.api";
+import { Profil } from "../../models/Enum";
+import { useCurrentUserReducer } from "../../strore/reducer/CurrentUser.reducer";
 const EffectuerPage: React.FC = () => {
   const { id_groupe } = useParams();
   const navigate = useNavigate();
@@ -32,6 +34,8 @@ const EffectuerPage: React.FC = () => {
   const heureEffectuer = effectuerReducer.getEffectuerTrue(id_groupe);
   const heureNoEffectuer = effectuerReducer.getEffectuerFalse(id_groupe);
   useSignals();
+  const currentUserReducer = useCurrentUserReducer();
+  const user = currentUserReducer.getCurrentUserSignal().value.user;
   return (
     <>
       <Stack spacing={3}>
@@ -85,6 +89,9 @@ const EffectuerPage: React.FC = () => {
                     </TableCell>
                     <TableCell style={CustomeTable.styleBody} align="center">
                       <Checkbox
+                        disabled={
+                          user?.profil === Profil.ADMINISTRATEUR ? false : true
+                        }
                         size="large"
                         checked={effectue.effectuer}
                         color="success"
@@ -100,6 +107,9 @@ const EffectuerPage: React.FC = () => {
                     </TableCell>
                     <TableCell style={CustomeTable.styleBody} align="center">
                       <Checkbox
+                        disabled={
+                          user?.profil === Profil.ADMINISTRATEUR ? false : true
+                        }
                         size="large"
                         checked={!effectue.effectuer}
                         color="error"

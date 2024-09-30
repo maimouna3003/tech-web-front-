@@ -62,9 +62,11 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({
               <TableCell style={CustomeTable.styleThead} align="center">
                 Nom
               </TableCell>
-              <TableCell style={CustomeTable.styleThead} align="center">
-                Tuteur
-              </TableCell>
+              {user?.profil === Profil.ADMINISTRATEUR && (
+                <TableCell style={CustomeTable.styleThead} align="center">
+                  Tuteur
+                </TableCell>
+              )}
               <TableCell style={CustomeTable.styleThead} align="center">
                 Heure Total Effectués
               </TableCell>
@@ -90,10 +92,10 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({
                 <TableCell style={CustomeTable.styleBody} align="left">
                   {groupe.nom?.toUpperCase()}
                 </TableCell>
-                <TableCell style={CustomeTable.styleBody} align="left">
-                  {groupe.user?.nom === undefined && (
-                    <>
-                      {user?.profil === Profil.ADMINISTRATEUR && (
+                {user?.profil === Profil.ADMINISTRATEUR && (
+                  <TableCell style={CustomeTable.styleBody} align="left">
+                    {groupe.user?.nom === undefined && (
+                      <>
                         <Box sx={{ minWidth: 120 }}>
                           <FormControl fullWidth>
                             <InputLabel
@@ -140,11 +142,11 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({
                             </Button>
                           </FormControl>
                         </Box>
-                      )}
-                    </>
-                  )}
-                  {groupe.user?.nom} {groupe.user?.prenom}
-                </TableCell>
+                      </>
+                    )}
+                    {groupe.user?.nom} {groupe.user?.prenom}
+                  </TableCell>
+                )}
                 <TableCell style={CustomeTable.styleBody} align="center">
                   {groupe.heureTotalEffectue} - heures
                 </TableCell>
@@ -156,9 +158,10 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({
                 </TableCell>
                 <TableCell style={CustomeTable.styleBody} align="center">
                   {/* BTN Remove tuteur */}
-                  {user?.profil === Profil.ADMINISTRATEUR && (
-                    <>
-                      {!(groupe.user?.nom === undefined) && (
+
+                  <>
+                    {!(groupe.user?.nom === undefined) &&
+                      user?.profil === Profil.ADMINISTRATEUR && (
                         <IconButton
                           onClick={() => {
                             groupe = {
@@ -176,11 +179,11 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({
                           />
                         </IconButton>
                       )}
-                    </>
-                  )}
+                  </>
 
                   {/* BTN details */}
-                  {!(groupe.user?.nom === undefined) && (
+                  {(!(groupe.user?.nom === undefined) ||
+                    user?.profil === Profil.TUTEUR) && (
                     <IconButton
                       onClick={() =>
                         onNav(`${RoutesName.effectuer}/${groupe.id}`)
@@ -191,15 +194,15 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({
                   )}
 
                   {/* BTN delete */}
-                  {user?.profil === Profil.ADMINISTRATEUR && (
-                    <>
-                      {groupe.user?.nom === undefined && (
+
+                  <>
+                    {groupe.user?.nom === undefined &&
+                      user?.profil === Profil.ADMINISTRATEUR && (
                         <IconButton onClick={() => delGroupeApi(groupe)}>
                           <DeleteOutlinedIcon fontSize="large" color="error" />
                         </IconButton>
                       )}
-                    </>
-                  )}
+                  </>
                 </TableCell>
               </TableRow>
             ))}

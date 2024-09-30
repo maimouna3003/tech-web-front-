@@ -41,3 +41,18 @@ export const getTotalSeanceNonTermineForTuteur = (
   });
   return nbrSeanceTerminer;
 };
+
+export const getProgressionTermineForTuteur = (
+  seances: IEffectuee[]
+): number => {
+  let pourcentSeanceTerminer = 0;
+
+  if (seances?.length !== undefined) {
+    seances.forEach((seance) => {
+      if (seance.effectuer) pourcentSeanceTerminer = pourcentSeanceTerminer + 1;
+    });
+  }
+
+  const pourcentage = (pourcentSeanceTerminer / seances.length) * 100;
+  return pourcentage;
+};
