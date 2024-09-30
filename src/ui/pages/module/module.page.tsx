@@ -18,6 +18,8 @@ import { useSignals } from "@preact/signals-react/runtime";
 import { StateEnum } from "../../../strore/State";
 import { delModuleApi } from "../../../restApi/Module.api";
 import SkeletonTabComponent from "../../components/state/skeleton.component";
+import { useCurrentUserReducer } from "../../../strore/reducer/CurrentUser.reducer";
+import { Profil } from "../../../models/Enum";
 
 const ModulePage: React.FC = () => {
   const navigate = useNavigate();
@@ -27,9 +29,15 @@ const ModulePage: React.FC = () => {
   };
 
   //Reducer
+  useSignals();
+  const currentUserReducer = useCurrentUserReducer();
+  const user = currentUserReducer.getCurrentUserSignal().value.user;
   const moduleReducer = useModuleReducer();
   const modulesSignal = moduleReducer.getSignalEntities();
-  useSignals();
+  const modules = [];
+  // if (user?.profil === Profil.ADMINISTRATEUR) {
+  //   modules = user.modules
+  // }
   console.log("page list modules");
   return (
     <>
@@ -40,17 +48,18 @@ const ModulePage: React.FC = () => {
           spacing={8}
         >
           <Stack> LISTE MODULE</Stack>
-
-          <Stack>
-            <Button
-              onClick={() => onNav(RoutesName.module.moduleAdd)}
-              color="success"
-              type="submit"
-              variant="outlined"
-            >
-              Ajouter Module
-            </Button>
-          </Stack>
+          {user?.profil === Profil.ADMINISTRATEUR && (
+            <Stack>
+              <Button
+                onClick={() => onNav(RoutesName.module.moduleAdd)}
+                color="success"
+                type="submit"
+                variant="outlined"
+              >
+                Ajouter Module
+              </Button>
+            </Stack>
+          )}
         </Stack>
 
         <Box
@@ -135,24 +144,29 @@ const ModulePage: React.FC = () => {
                               color="info"
                             />
                           </IconButton>
-                          <IconButton
-                            onClick={() =>
-                              onNav(
-                                `${RoutesName.module.moduleUpd}/${module.id}`
-                              )
-                            }
-                          >
-                            <DriveFileRenameOutlineOutlinedIcon
-                              fontSize="large"
-                              color="info"
-                            />
-                          </IconButton>
-                          <IconButton onClick={() => delModuleApi(module)}>
-                            <DeleteOutlinedIcon
-                              fontSize="large"
-                              color="error"
-                            />
-                          </IconButton>
+
+                          {user?.profil === Profil.ADMINISTRATEUR && (
+                            <IconButton
+                              onClick={() =>
+                                onNav(
+                                  `${RoutesName.module.moduleUpd}/${module.id}`
+                                )
+                              }
+                            >
+                              <DriveFileRenameOutlineOutlinedIcon
+                                fontSize="large"
+                                color="info"
+                              />
+                            </IconButton>
+                          )}
+                          {user?.profil === Profil.ADMINISTRATEUR && (
+                            <IconButton onClick={() => delModuleApi(module)}>
+                              <DeleteOutlinedIcon
+                                fontSize="large"
+                                color="error"
+                              />
+                            </IconButton>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}

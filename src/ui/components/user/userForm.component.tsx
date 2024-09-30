@@ -86,7 +86,7 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
             })}
             color="success"
           >
-            <option value="H">Homme</option>
+            <option value="M">Homme</option>
             <option value="F">Femme</option>
           </NativeSelect>
 

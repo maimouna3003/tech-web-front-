@@ -21,7 +21,7 @@ export class Store {
       message: signal<string | null>(null),
     },
     entities: initEntitiesStore(),
-    currentUser: signal({ email: null, isConnected: false, profil: null }),
+    currentUser: signal({ email: null, isConnected: false, user: null }),
   };
 }
 

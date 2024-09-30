@@ -4,7 +4,6 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { useSignals } from "@preact/signals-react/runtime";
 import { useUserReducer } from "../../../strore/reducer/User.reducer";
-import CardNotifyState from "../../components/cardNotifyState.component";
 import UserTabComponent from "../../components/user/userList.component";
 import UserFormComponent from "../../components/user/userForm.component";
 import IUtilisateur from "../../../models/Utilisateur.model";
@@ -63,8 +62,6 @@ const UtilisateursPage: React.FC = () => {
 
   return (
     <>
-      <CardNotifyState />
-
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs

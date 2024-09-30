@@ -56,7 +56,7 @@ export const addUserApi = async (
     return newUser;
   } catch (error) {
     console.log("error addUserApi" + error);
-    userReducer.setMessage(`${getTxtError()} de l'ajout de la seances`);
+    userReducer.setMessage(`${getTxtError()} de l'ajout de l'utilisateur`);
     userReducer.setState(StateEnum.Error);
     return false;
   }

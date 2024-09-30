@@ -20,6 +20,8 @@ import UserTabComponent from "../../components/user/userList.component";
 import { useUserReducer } from "../../../strore/reducer/User.reducer";
 import { getUsersNoAffectationModuleService } from "../../../services/Module.service";
 import SkeletonTabComponent from "../../components/state/skeleton.component";
+import { useCurrentUserReducer } from "../../../strore/reducer/CurrentUser.reducer";
+import { Profil } from "../../../models/Enum";
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -56,6 +58,8 @@ const ModuleDetailsPage: React.FC = () => {
     usersSignal.value
   );
   useSignals();
+  const currentUserReducer = useCurrentUserReducer();
+  const user = currentUserReducer.getCurrentUserSignal().value.user;
   // getModuleByIdAPi(id_module ?? "");
 
   const [value, setValue] = React.useState(0);
@@ -107,6 +111,7 @@ const ModuleDetailsPage: React.FC = () => {
         Nom : {module?.nom} <br /> Semaine : {module?.semaine} <br /> Heure :
         {module?.heure}
       </Box>
+
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
@@ -117,7 +122,9 @@ const ModuleDetailsPage: React.FC = () => {
             <Tab label="Seances" />
             <Tab label="Groupes" />
             <Tab label="Tuteurs" />
-            <Tab label="Affectation Module" />
+            {user?.profil === Profil.ADMINISTRATEUR && (
+              <Tab label="Affectation Module" />
+            )}
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
@@ -132,44 +139,46 @@ const ModuleDetailsPage: React.FC = () => {
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <Stack spacing={3}>
-            <Stack>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <TextField
-                  type="number"
-                  variant="standard"
-                  label="Nombre de groupe"
-                  {...register("nbr", {
-                    max: 10,
-                    required: true,
-                  })}
-                  color="success"
-                  slotProps={{
-                    input: {
-                      endAdornment: <GroupAddOutlinedIcon color="success" />,
-                    },
-                  }}
-                ></TextField>
-                <TextField
-                  type="text"
-                  variant="standard"
-                  placeholder="A"
-                  label="Lettre initial groupe"
-                  {...register("initial", {
-                    maxLength: 1,
-                    required: true,
-                  })}
-                  color="success"
-                ></TextField>
-                <Button
-                  color="success"
-                  disabled={!isValid}
-                  type="submit"
-                  variant="outlined"
-                >
-                  Ajouter
-                </Button>
-              </form>
-            </Stack>
+            {user?.profil === Profil.ADMINISTRATEUR && (
+              <Stack>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <TextField
+                    type="number"
+                    variant="standard"
+                    label="Nombre de groupe"
+                    {...register("nbr", {
+                      max: 10,
+                      required: true,
+                    })}
+                    color="success"
+                    slotProps={{
+                      input: {
+                        endAdornment: <GroupAddOutlinedIcon color="success" />,
+                      },
+                    }}
+                  ></TextField>
+                  <TextField
+                    type="text"
+                    variant="standard"
+                    placeholder="A"
+                    label="Lettre initial groupe"
+                    {...register("initial", {
+                      maxLength: 1,
+                      required: true,
+                    })}
+                    color="success"
+                  ></TextField>
+                  <Button
+                    color="success"
+                    disabled={!isValid}
+                    type="submit"
+                    variant="outlined"
+                  >
+                    Ajouter
+                  </Button>
+                </form>
+              </Stack>
+            )}
             <Stack>
               <GroupeTabComponent
                 idModule={module?.id ?? ""}
@@ -188,14 +197,16 @@ const ModuleDetailsPage: React.FC = () => {
           />
         </CustomTabPanel>
         {/* Users pour Affectation */}
-        <CustomTabPanel value={value} index={3}>
-          <UserTabComponent
-            module={module ?? {}}
-            isAffected={true}
-            users={usersNoAffected}
-            isPageUsers={false}
-          />
-        </CustomTabPanel>
+        {user?.profil === Profil.ADMINISTRATEUR && (
+          <CustomTabPanel value={value} index={3}>
+            <UserTabComponent
+              module={module ?? {}}
+              isAffected={true}
+              users={usersNoAffected}
+              isPageUsers={false}
+            />
+          </CustomTabPanel>
+        )}
       </Box>
     </>
   );

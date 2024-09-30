@@ -2,11 +2,10 @@ import "./App.css";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import ModulePage from "./ui/pages/module/module.page";
 import DashboardPage from "./ui/pages/home.page";
-import { Grid2, Stack } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import GroupePage from "./ui/pages/groupe/groupe.page";
 import SideNavBar from "./ui/components/sideBar.component";
 import { RoutesName } from "./services/Helpers.service";
-import PlanningPage from "./ui/pages/planning.page";
 import GroupeUpdPage from "./ui/pages/groupe/groupeUpd.page";
 import GroupeAddPage from "./ui/pages/groupe/groupeAdd.page";
 import ModuleUpdPage from "./ui/pages/module/moduleUpd.page";
@@ -21,15 +20,19 @@ import { getUsersAPi } from "./restApi/User.api";
 import UtilisateursPage from "./ui/pages/users/utilisateurs.page";
 import { useCurrentUserReducer } from "./strore/reducer/CurrentUser.reducer";
 import StateProgress from "./ui/components/state/stateProgress.component";
+import PlanningPage from "./ui/pages/planning.page";
+import { getCurrentUser } from "./restApi/Auth.api";
 
 const PageLayout: React.FC = () => {
   //Api
   const isConnected = localStorage.getItem("isConnected");
+  const email = localStorage.getItem("email");
   const currentUser = useCurrentUserReducer();
   if (
     isConnected === "true" ||
     currentUser.getCurrentUserSignal().value.isConnected
   ) {
+    getCurrentUser(email ?? "");
     getModulesAPi();
     getEffectuerAPi();
     getUsersAPi();

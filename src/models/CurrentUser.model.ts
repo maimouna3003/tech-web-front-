@@ -1,7 +1,7 @@
-import { Profil } from "./Enum";
+import IUtilisateur from "./Utilisateur.model";
 
 export interface ICurrentUser {
   email: string | null;
   isConnected: boolean;
-  profil: Profil | null;
+  user: IUtilisateur | null;
 }

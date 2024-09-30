@@ -1,11 +1,11 @@
 import IUserLogin from "../models/UserLogin.model";
 import {
+  customReqHeaders,
   customReqHeadersLogin,
   FetchUrl,
   handlerErrorCustom,
 } from "../services/Helpers.service";
 import { useCurrentUserReducer } from "../strore/reducer/CurrentUser.reducer";
-import { StateEnum } from "../strore/State";
 import { getEffectuerAPi } from "./Effecture.api";
 import { getModulesAPi } from "./Module.api";
 import { getUsersAPi } from "./User.api";
@@ -29,7 +29,7 @@ export const login = async (userLogin: IUserLogin): Promise<boolean> => {
     currentUserReducer.setCurrentUserSignal({
       email: userLogin.userEmail,
       isConnected: true,
-      profil: null,
+      user: null,
     });
 
     //Saved in local storage
@@ -37,6 +37,7 @@ export const login = async (userLogin: IUserLogin): Promise<boolean> => {
     localStorage.setItem("email", userLogin.userEmail);
     localStorage.setItem("isConnected", "true");
     //Api
+    getCurrentUser(userLogin.userEmail);
     getModulesAPi();
     getEffectuerAPi();
     getUsersAPi();
@@ -55,13 +56,39 @@ export const login = async (userLogin: IUserLogin): Promise<boolean> => {
   }
 };
 
+export const getCurrentUser = async (email: string): Promise<boolean> => {
+  try {
+    const responseReq = await fetch(`${FetchUrl}/user/currentUser/${email}`, {
+      method: "GET",
+      headers: customReqHeaders(),
+    });
+
+    //
+    handlerErrorCustom("getCurrentUser", responseReq);
+
+    const user = await responseReq.json();
+    currentUserReducer.setCurrentUserSignal({
+      email,
+      isConnected: true,
+      user,
+    });
+    localStorage.setItem(
+      "currentUser",
+      JSON.stringify(currentUserReducer.getCurrentUserSignal().value)
+    );
+    return true;
+  } catch (error) {
+    console.log("error getCurrentUser" + error);
+    return false;
+  }
+};
 //Disconnected
 export const logOut = () => {
   //
   currentUserReducer.setCurrentUserSignal({
     email: null,
     isConnected: false,
-    profil: null,
+    user: null,
   });
 
   //Remove in local storage

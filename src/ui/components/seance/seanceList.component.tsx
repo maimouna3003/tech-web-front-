@@ -15,6 +15,8 @@ import { CustomeTable } from "../../../services/Helpers.service";
 import Moment from "react-moment";
 import ISeance from "../../../models/Seance.model";
 import { delSeanceApi } from "../../../restApi/Seance.api";
+import { useCurrentUserReducer } from "../../../strore/reducer/CurrentUser.reducer";
+import { Profil } from "../../../models/Enum";
 
 interface SeanceTabComponentProps {
   idModule: string;
@@ -25,6 +27,8 @@ const SeanceTabComponent: React.FC<SeanceTabComponentProps> = ({
   idModule,
   seances,
 }) => {
+  const currentUserReducer = useCurrentUserReducer();
+  const user = currentUserReducer.getCurrentUserSignal().value.user;
   //
 
   return (
@@ -39,9 +43,11 @@ const SeanceTabComponent: React.FC<SeanceTabComponentProps> = ({
               <TableCell style={CustomeTable.styleThead} align="center">
                 Date de création
               </TableCell>
-              <TableCell style={CustomeTable.styleThead} align="center">
-                Actions
-              </TableCell>
+              {user?.profil === Profil.ADMINISTRATEUR && (
+                <TableCell style={CustomeTable.styleThead} align="center">
+                  Actions
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -57,11 +63,13 @@ const SeanceTabComponent: React.FC<SeanceTabComponentProps> = ({
                 <TableCell style={CustomeTable.styleBody} align="center">
                   <Moment format="YYYY/MM/DD">{seance.createdAt}</Moment>
                 </TableCell>
-                <TableCell style={CustomeTable.styleBody} align="center">
-                  <IconButton onClick={() => delSeanceApi(seance)}>
-                    <DeleteOutlinedIcon fontSize="large" color="error" />
-                  </IconButton>
-                </TableCell>
+                {user?.profil === Profil.ADMINISTRATEUR && (
+                  <TableCell style={CustomeTable.styleBody} align="center">
+                    <IconButton onClick={() => delSeanceApi(seance)}>
+                      <DeleteOutlinedIcon fontSize="large" color="error" />
+                    </IconButton>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

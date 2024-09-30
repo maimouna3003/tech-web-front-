@@ -21,6 +21,7 @@ import {
   delAffectationUserModuleService,
 } from "../../../services/Module.service";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { useCurrentUserReducer } from "../../../strore/reducer/CurrentUser.reducer";
 
 interface UserTabComponentProps {
   module: IModule;
@@ -36,6 +37,8 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
   isPageUsers,
 }) => {
   //
+  const currentUserReducer = useCurrentUserReducer();
+  const user = currentUserReducer.getCurrentUserSignal().value.user;
 
   return (
     <Stack spacing={3}>
@@ -67,9 +70,11 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
               <TableCell style={CustomeTable.styleThead} align="center">
                 Téléphone
               </TableCell>
-              <TableCell style={CustomeTable.styleThead} align="center">
-                Actions
-              </TableCell>
+              {user?.profil === Profil.ADMINISTRATEUR && (
+                <TableCell style={CustomeTable.styleThead} align="center">
+                  Actions
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -109,44 +114,53 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
                 </TableCell>
 
                 {/* verifie si c'est la page user qui en fait appelle */}
-                {!isPageUsers && (
-                  <TableCell style={CustomeTable.styleBody} align="center">
-                    {isAffected && (
-                      <IconButton
-                        onClick={() =>
-                          affectationUserModuleService(module, user)
-                        }
-                      >
-                        <PersonAddOutlinedIcon
-                          fontSize="large"
-                          color="success"
-                        />
-                      </IconButton>
+                {user?.profil === Profil.ADMINISTRATEUR && (
+                  <>
+                    {!isPageUsers && (
+                      <TableCell style={CustomeTable.styleBody} align="center">
+                        {isAffected && (
+                          <IconButton
+                            onClick={() =>
+                              affectationUserModuleService(module, user)
+                            }
+                          >
+                            <PersonAddOutlinedIcon
+                              fontSize="large"
+                              color="success"
+                            />
+                          </IconButton>
+                        )}
+                        {!isAffected && (
+                          <IconButton
+                            onClick={() =>
+                              delAffectationUserModuleService(module, user)
+                            }
+                          >
+                            <PersonRemoveOutlinedIcon
+                              fontSize="large"
+                              color="error"
+                            />
+                          </IconButton>
+                        )}
+                      </TableCell>
                     )}
-                    {!isAffected && (
-                      <IconButton
-                        onClick={() =>
-                          delAffectationUserModuleService(module, user)
-                        }
-                      >
-                        <PersonRemoveOutlinedIcon
-                          fontSize="large"
-                          color="error"
-                        />
-                      </IconButton>
-                    )}
-                  </TableCell>
+                  </>
                 )}
-                {isPageUsers && (
-                  <TableCell style={CustomeTable.styleBody} align="center">
-                    <IconButton
-                      onClick={() =>
-                        delAffectationUserModuleService(module, user)
-                      }
-                    >
-                      <DeleteOutlinedIcon fontSize="large" color="error" />
-                    </IconButton>
-                  </TableCell>
+
+                {user?.profil === Profil.ADMINISTRATEUR && (
+                  <>
+                    {isPageUsers && (
+                      <TableCell style={CustomeTable.styleBody} align="center">
+                        <IconButton
+                          onClick={() =>
+                            delAffectationUserModuleService(module, user)
+                          }
+                        >
+                          <DeleteOutlinedIcon fontSize="large" color="error" />
+                        </IconButton>
+                      </TableCell>
+                    )}
+                  </>
                 )}
               </TableRow>
             ))}
