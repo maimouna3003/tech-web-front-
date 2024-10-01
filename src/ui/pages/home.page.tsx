@@ -30,11 +30,11 @@ const DashboardPage: React.FC<DashboardProps> = () => {
     user?.groupes ?? []
   );
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ p: 4, bgcolor: '#F6F8FB' }}>
       {/* Conteneur principal */}
       <Stack direction="row" spacing={4} justifyContent="space-between">
         {/* Colonne de gauche */}
-        <Box flex={2} sx={{ p: 3, borderRadius: 2, bgcolor: "#F6F8FB" }}>
+        <Box flex={2} sx={{ p: 3, borderRadius: 2, bgcolor: "#FFFFFF" }}>
           {/* Informations de l'utilisateur */}
           <Typography variant="h4" fontWeight="bold">
             {user?.nom} {user?.prenom}
