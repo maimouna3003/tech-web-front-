@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { RoutesName } from "../../../services/Helpers.service";
 import { useModuleReducer } from "../../../strore/reducer/Module.reducer";
 import { updModuleApi } from "../../../restApi/Module.api";
+import { Stack } from "@mui/material";
 
 interface ModuleUpdPageProps {}
 
@@ -27,7 +28,10 @@ const ModuleUpdPage: React.FC<ModuleUpdPageProps> = () => {
 
   return (
     <>
-      <ModuleFormComponent onSubmit={onSubmit} module={module} />
+      <Stack style={{ position : 'relative', left : '130px' }}>
+           <ModuleFormComponent onSubmit={onSubmit} module={module} />
+      </Stack>
+
     </>
   );
 };

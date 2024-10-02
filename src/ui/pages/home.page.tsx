@@ -70,7 +70,7 @@ const DashboardPage: React.FC<DashboardProps> = () => {
 
           {/* Cours non effectués */}
           <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 2 }}>
-            <CancelOutlined sx={{ color: "orange" }} />
+            <CancelOutlined sx={{ color: "red" }} />
             <Typography>Cours non effectués</Typography>
             <Typography fontWeight="bold" sx={{ ml: "auto" }}>
               {nbrSeanceNonTerminé}

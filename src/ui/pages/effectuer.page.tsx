@@ -10,6 +10,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -45,22 +46,22 @@ const EffectuerPage: React.FC = () => {
           </IconButton>
         </Stack>
         <Stack direction="row" spacing={3}>
-          <Stack>SEANCE List: </Stack>
-          <Stack>
-            Heures total effectuées = {heureEffectuer.value.length * 2} - heures
+          <Stack style={{ fontSize : '17px', fontWeight : 'bold' }}>SEANCE List: </Stack>
+          <Stack style={{ width : '20%' }}>
+            <Typography color="success">Heures total effectuées = {heureEffectuer.value.length * 2} - heures</Typography>
           </Stack>
           <Stack>
-            Heures total Non effectuées = {heureNoEffectuer.value.length * 2} -
-            heures
+          <Typography color="red">Heures total Non effectuées = {heureNoEffectuer.value.length * 2} -
+            heures</Typography>
           </Stack>
         </Stack>
         <Box
           component="section"
-          sx={{ m: 10, p: 4, border: "1px dashed #F2901D" }}
+          sx={{ m: 10, p: 4 }}
         >
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} sx={{ position: 'relative', left: '-20px' }}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
+              <TableHead style={{ backgroundColor: '#5a5af5' }}>
                 <TableRow>
                   <TableCell style={CustomeTable.styleThead} align="center">
                     Nom
