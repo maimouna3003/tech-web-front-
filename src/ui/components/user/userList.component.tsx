@@ -116,13 +116,11 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
                 {/* verifie si c'est la page user qui en fait appelle */}
                 {!isPageUsers && (
                   <>
-                    {user?.profil === Profil.ADMINISTRATEUR && (
-                      <>
-                        <TableCell
-                          style={CustomeTable.styleBody}
-                          align="center"
-                        >
-                          {isAffected && (
+                    <>
+                      <TableCell style={CustomeTable.styleBody} align="center">
+                        {isAffected && (
+                          <>
+                            {/* {user?.profil === Profil.ADMINISTRATEUR && ( */}
                             <IconButton
                               onClick={() =>
                                 affectationUserModuleService(module, user)
@@ -133,22 +131,23 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
                                 color="success"
                               />
                             </IconButton>
-                          )}
-                          {!isAffected && (
-                            <IconButton
-                              onClick={() =>
-                                delAffectationUserModuleService(module, user)
-                              }
-                            >
-                              <PersonRemoveOutlinedIcon
-                                fontSize="large"
-                                color="error"
-                              />
-                            </IconButton>
-                          )}
-                        </TableCell>
-                      </>
-                    )}
+                            {/* )} */}
+                          </>
+                        )}
+                        {!isAffected && (
+                          <IconButton
+                            onClick={() =>
+                              delAffectationUserModuleService(module, user)
+                            }
+                          >
+                            <PersonRemoveOutlinedIcon
+                              fontSize="large"
+                              color="error"
+                            />
+                          </IconButton>
+                        )}
+                      </TableCell>
+                    </>
                   </>
                 )}
 

@@ -56,3 +56,15 @@ export const getProgressionTermineForTuteur = (
   const pourcentage = (pourcentSeanceTerminer / seances.length) * 100;
   return pourcentage;
 };
+
+export const getPlanningSeances = (groupes: IGroupe[]): IEffectuee[] => {
+  let listSeances: any[] = [];
+  groupes.forEach((groupe) => {
+    const effectues = groupe.effectues;
+    groupes.forEach((effectue) => {
+      listSeances.push(effectue);
+      console.log("date ==" + effectue.createdAt);
+    });
+  });
+  return listSeances;
+};

@@ -1,7 +1,11 @@
 import {
   Box,
+  Button,
   Checkbox,
+  FormControl,
   IconButton,
+  InputLabel,
+  NativeSelect,
   Paper,
   Stack,
   Table,
@@ -10,6 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -124,7 +129,27 @@ const EffectuerPage: React.FC = () => {
                       />
                     </TableCell>
                     <TableCell style={CustomeTable.styleBody} align="center">
-                      <Moment format="YYYY/MM/DD">{effectue.createdAt}</Moment>
+                      <>
+                        {user?.profil === Profil.ADMINISTRATEUR && (
+                          <FormControl fullWidth>
+                            <TextField
+                              type="date"
+                              id="standard-basic"
+                              variant="standard"
+                              onChange={({ target: { value } }) => {
+                                console.log("date est == " + value);
+                                effectue.createdAt = value;
+                                updEffectuerApi({
+                                  ...effectue,
+                                  groupe: { id: effectue.groupe?.id },
+                                  seance: { id: effectue.seance?.id },
+                                });
+                              }}
+                            />
+                          </FormControl>
+                        )}
+                      </>
+                      <Moment format="DD/MM/YYYY">{effectue.createdAt}</Moment>
                     </TableCell>
                   </TableRow>
                 ))}
