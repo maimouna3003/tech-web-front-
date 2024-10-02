@@ -1,6 +1,7 @@
 import {
   Box,
   Checkbox,
+  FormControl,
   IconButton,
   Paper,
   Stack,
@@ -10,6 +11,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -46,22 +48,29 @@ const EffectuerPage: React.FC = () => {
           </IconButton>
         </Stack>
         <Stack direction="row" spacing={3}>
-          <Stack style={{ fontSize : '17px', fontWeight : 'bold' }}>SEANCE List: </Stack>
-          <Stack style={{ width : '20%' }}>
-            <Typography color="success">Heures total effectuées = {heureEffectuer.value.length * 2} - heures</Typography>
+          <Stack style={{ fontSize: "17px", fontWeight: "bold" }}>
+            SEANCES : {effectues[0].groupe?.nom}
+          </Stack>
+          <Stack style={{ width: "20%" }}>
+            <Typography color="success">
+              Heures total effectuées = {heureEffectuer.value.length * 2} -
+              heures
+            </Typography>
           </Stack>
           <Stack>
-          <Typography color="red">Heures total Non effectuées = {heureNoEffectuer.value.length * 2} -
-            heures</Typography>
+            <Typography color="red">
+              Heures total Non effectuées = {heureNoEffectuer.value.length * 2}{" "}
+              - heures
+            </Typography>
           </Stack>
         </Stack>
-        <Box
-          component="section"
-          sx={{ m: 10, p: 4 }}
-        >
-          <TableContainer component={Paper} sx={{ position: 'relative', left: '-20px' }}>
+        <Box component="section" sx={{ m: 10, p: 4 }}>
+          <TableContainer
+            component={Paper}
+            sx={{ position: "relative", left: "-20px" }}
+          >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead style={{ backgroundColor: '#5a5af5' }}>
+              <TableHead style={{ backgroundColor: "#5a5af5" }}>
                 <TableRow>
                   <TableCell style={CustomeTable.styleThead} align="center">
                     Nom
@@ -125,7 +134,27 @@ const EffectuerPage: React.FC = () => {
                       />
                     </TableCell>
                     <TableCell style={CustomeTable.styleBody} align="center">
-                      <Moment format="YYYY/MM/DD">{effectue.createdAt}</Moment>
+                      <>
+                        {user?.profil === Profil.ADMINISTRATEUR && (
+                          <FormControl fullWidth>
+                            <TextField
+                              type="date"
+                              id="standard-basic"
+                              variant="standard"
+                              onChange={({ target: { value } }) => {
+                                console.log("date est == " + value);
+                                effectue.createdAt = value;
+                                updEffectuerApi({
+                                  ...effectue,
+                                  groupe: { id: effectue.groupe?.id },
+                                  seance: { id: effectue.seance?.id },
+                                });
+                              }}
+                            />
+                          </FormControl>
+                        )}
+                      </>
+                      <Moment format="DD/MM/YYYY">{effectue.createdAt}</Moment>
                     </TableCell>
                   </TableRow>
                 ))}

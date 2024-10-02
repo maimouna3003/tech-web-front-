@@ -1,3 +1,4 @@
+import { Profil } from "../models/Enum";
 import IModule from "../models/Module.model";
 import IUtilisateur from "../models/Utilisateur.model";
 import { updModuleApi } from "../restApi/Module.api";
@@ -35,14 +36,16 @@ export const getUsersNoAffectationModuleService = (
 ): IUtilisateur[] => {
   const usersAffected = module.users;
   const usersNoAffected: IUtilisateur[] = [];
-  users.forEach((users) => {
-    let retrouver = false;
-    usersAffected?.forEach((userAffected) => {
-      if (users.id === userAffected.id) {
-        retrouver = true;
-      }
-    });
-    if (!retrouver) usersNoAffected.push(users);
+  users.forEach((user) => {
+    if (user.profil === Profil.TUTEUR) {
+      let retrouver = false;
+      usersAffected?.forEach((userAffected) => {
+        if (user.id === userAffected.id) {
+          retrouver = true;
+        }
+      });
+      if (!retrouver) usersNoAffected.push(user);
+    }
   });
 
   return usersNoAffected;

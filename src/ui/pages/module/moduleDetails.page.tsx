@@ -8,7 +8,13 @@ import { useSignals } from "@preact/signals-react/runtime";
 import { useParams } from "react-router-dom";
 import { useModuleReducer } from "../../../strore/reducer/Module.reducer";
 import SeanceTabComponent from "../../components/seance/seanceList.component";
-import { Button,  InputAdornment, Stack, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
 import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
 import IGroupe from "../../../models/Groupe.model";
@@ -60,7 +66,6 @@ const ModuleDetailsPage: React.FC = () => {
     module ?? {},
     usersSignal.value
   );
-  console.log(usersNoAffected.length);
   let groupesHeures: IGroupe[] = [];
   if (user?.profil === Profil.ADMINISTRATEUR) {
     groupesHeures = groupeReducer.getHeuresModule(module?.groupes ?? []);
@@ -113,9 +118,12 @@ const ModuleDetailsPage: React.FC = () => {
   const stateModule = moduleReducer.getState();
   return (
     <>
-      
-      <Box sx={{ width: "12%"}}>
-       <Typography variant="h6" sx={{border:"1px solid lightgrey", p:2}}> Nom : {module?.nom} Semaine : {module?.semaine} <br/> Heure : {module?.heure}</Typography>   
+      <Box sx={{ width: "12%" }}>
+        <Typography variant="h6" sx={{ border: "1px solid lightgrey", p: 2 }}>
+          {" "}
+          Nom : {module?.nom} Semaine : {module?.semaine} <br /> Heure :{" "}
+          {module?.heure}
+        </Typography>
       </Box>
 
       <Box sx={{ width: "100%" }}>
@@ -153,7 +161,7 @@ const ModuleDetailsPage: React.FC = () => {
                     variant="outlined"
                     label="Nombre de groupes"
                     placeholder="Saisissez le nombre de groupes (max. 10)"
-                    sx={{ minWidth: '200px', flexGrow: 1 }}
+                    sx={{ minWidth: "200px", flexGrow: 1 }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -176,9 +184,9 @@ const ModuleDetailsPage: React.FC = () => {
                     type="text"
                     variant="outlined"
                     label="Lettre initiale du groupe"
-                     placeholder="Ex : A"
-                     style={{ position : 'relative' , left : 10}}
-                     InputProps={{
+                    placeholder="Ex : A"
+                    style={{ position: "relative", left: 10 }}
+                    InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
                           <span style={{ fontSize: "1.2rem" }}>🔤</span>
@@ -187,8 +195,8 @@ const ModuleDetailsPage: React.FC = () => {
                     }}
                     {...register("initial", {
                       maxLength: {
-                       value :  1,
-                       message: "Une seule lettre est permise",
+                        value: 1,
+                        message: "Une seule lettre est permise",
                       },
                       required: "Veuillez entrer une lettre initiale",
                     })}
@@ -199,7 +207,12 @@ const ModuleDetailsPage: React.FC = () => {
                     disabled={!isValid}
                     type="submit"
                     variant="text"
-                    style={{ position : 'relative' , left : 20, padding : 10, top : 5 }}
+                    style={{
+                      position: "relative",
+                      left: 20,
+                      padding: 10,
+                      top: 5,
+                    }}
                   >
                     Ajouter le groupe
                   </Button>

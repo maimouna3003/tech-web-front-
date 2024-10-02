@@ -49,7 +49,10 @@ const ModulePage: React.FC = () => {
           direction="row"
           justifyContent="space-between"
         >
-          <Stack style={{ fontSize : 17, fontWeight : 'bold' }}> LISTE MODULE</Stack>
+          <Stack style={{ fontSize: 17, fontWeight: "bold" }}>
+            {" "}
+            LISTE MODULES
+          </Stack>
           {user?.profil === Profil.ADMINISTRATEUR && (
             <Stack>
               <Button
@@ -57,7 +60,7 @@ const ModulePage: React.FC = () => {
                 color="primary"
                 type="submit"
                 variant="contained"
-                style={{ fontSize : 14, fontWeight :'bold' }}
+                style={{ fontSize: 14, fontWeight: "bold" }}
               >
                 Ajouter Module
               </Button>
@@ -65,18 +68,15 @@ const ModulePage: React.FC = () => {
           )}
         </Stack>
 
-        <Box
-          component="section"
-          sx={{ m: 10, p: 4}}
-        >
+        <Box component="section" sx={{ m: 10, p: 4 }}>
           {/* SKELETON */}
           {moduleReducer.getState().value === StateEnum.Loading && (
             <SkeletonTabComponent />
           )}
           {/* FIN SKELETON */}
-          <TableContainer component={Paper} sx={{ml: -3}}>
+          <TableContainer component={Paper} sx={{ ml: -3 }}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead style={{ backgroundColor:'#5a5af5' }}>
+              <TableHead style={{ backgroundColor: "#5a5af5" }}>
                 <TableRow>
                   <TableCell style={CustomeTable.styleThead} align="center">
                     Nom

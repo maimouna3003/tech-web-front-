@@ -7,4 +7,5 @@ export default interface IEffectuee extends IGlobal {
   effectuer: boolean;
   seance: ISeance | null; // Relation vers Seance
   groupe: IGroupe | null;
+  nomGroupe?: string;
 }
