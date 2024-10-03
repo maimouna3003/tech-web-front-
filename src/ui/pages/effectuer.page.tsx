@@ -1,11 +1,8 @@
 import {
   Box,
-  Button,
   Checkbox,
   FormControl,
   IconButton,
-  InputLabel,
-  NativeSelect,
   Paper,
   Stack,
   Table,
