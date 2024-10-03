@@ -38,13 +38,16 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
 }) => {
   //
   const currentUserReducer = useCurrentUserReducer();
-  const user = currentUserReducer.getCurrentUserSignal().value.user;
+  const currentUser = currentUserReducer.getCurrentUserSignal().value.user;
 
   return (
     <Stack spacing={3}>
-      <TableContainer component={Paper}>
+      <TableContainer
+        component={Paper}
+        sx={{ position: "relative", left: "-20px" }}
+      >
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
+          <TableHead style={{ backgroundColor: "#5a5af5" }}>
             <TableRow>
               <TableCell style={CustomeTable.styleThead} align="center">
                 Nom
@@ -70,7 +73,7 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
               <TableCell style={CustomeTable.styleThead} align="center">
                 Téléphone
               </TableCell>
-              {user?.profil === Profil.ADMINISTRATEUR && (
+              {currentUser?.profil === Profil.ADMINISTRATEUR && (
                 <TableCell style={CustomeTable.styleThead} align="center">
                   Actions
                 </TableCell>
@@ -116,23 +119,19 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
                 {/* verifie si c'est la page user qui en fait appelle */}
                 {!isPageUsers && (
                   <>
-                    <>
+                    {currentUser?.profil === Profil.ADMINISTRATEUR && (
                       <TableCell style={CustomeTable.styleBody} align="center">
                         {isAffected && (
-                          <>
-                            {/* {user?.profil === Profil.ADMINISTRATEUR && ( */}
-                            <IconButton
-                              onClick={() =>
-                                affectationUserModuleService(module, user)
-                              }
-                            >
-                              <PersonAddOutlinedIcon
-                                fontSize="large"
-                                color="success"
-                              />
-                            </IconButton>
-                            {/* )} */}
-                          </>
+                          <IconButton
+                            onClick={() =>
+                              affectationUserModuleService(module, user)
+                            }
+                          >
+                            <PersonAddOutlinedIcon
+                              fontSize="large"
+                              color="success"
+                            />
+                          </IconButton>
                         )}
                         {!isAffected && (
                           <IconButton
@@ -147,7 +146,7 @@ const UserTabComponent: React.FC<UserTabComponentProps> = ({
                           </IconButton>
                         )}
                       </TableCell>
-                    </>
+                    )}
                   </>
                 )}
 

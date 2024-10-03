@@ -55,9 +55,9 @@ const GroupeTabComponent: React.FC<GroupeTabComponentProps> = ({
 
   return (
     <Stack spacing={3}>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ position: 'relative', left: '-20px' }}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
+          <TableHead style={{ backgroundColor : '#5a5af5' }}>
             <TableRow>
               <TableCell style={CustomeTable.styleThead} align="center">
                 Nom

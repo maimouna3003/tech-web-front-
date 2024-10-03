@@ -45,18 +45,22 @@ const ModulePage: React.FC = () => {
     <>
       <Stack spacing={3}>
         <Stack
-          sx={{ m: 5, p: 2, border: "1px dashed #F2901D" }}
+          sx={{ m: 5, p: 2 }}
           direction="row"
-          spacing={8}
+          justifyContent="space-between"
         >
-          <Stack> LISTE MODULE</Stack>
+          <Stack style={{ fontSize: 17, fontWeight: "bold" }}>
+            {" "}
+            LISTE MODULES
+          </Stack>
           {user?.profil === Profil.ADMINISTRATEUR && (
             <Stack>
               <Button
                 onClick={() => onNav(RoutesName.module.moduleAdd)}
-                color="success"
+                color="primary"
                 type="submit"
-                variant="outlined"
+                variant="contained"
+                style={{ fontSize: 14, fontWeight: "bold" }}
               >
                 Ajouter Module
               </Button>
@@ -64,18 +68,15 @@ const ModulePage: React.FC = () => {
           )}
         </Stack>
 
-        <Box
-          component="section"
-          sx={{ m: 10, p: 4, border: "1px dashed #F2901D" }}
-        >
+        <Box component="section" sx={{ m: 10, p: 4 }}>
           {/* SKELETON */}
           {moduleReducer.getState().value === StateEnum.Loading && (
             <SkeletonTabComponent />
           )}
           {/* FIN SKELETON */}
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} sx={{ ml: -3 }}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
+              <TableHead style={{ backgroundColor: "#5a5af5" }}>
                 <TableRow>
                   <TableCell style={CustomeTable.styleThead} align="center">
                     Nom

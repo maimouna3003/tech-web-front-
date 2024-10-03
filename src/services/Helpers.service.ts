@@ -3,7 +3,7 @@ import { useStateAppReducer } from "../strore/reducer/StateApp.reducer";
 
 //CONFIG DATA TABLE
 export const CustomeTable = {
-  styleThead: { fontSize: 20, fontWeight: "bold", height: 70 },
+  styleThead: { fontSize: 17, fontWeight: "bold", height: 70, color: '#FFFFFF'},
   styleBody: { fontSize: 15, height: 60 },
 };
 

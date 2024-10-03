@@ -8,7 +8,13 @@ import { useSignals } from "@preact/signals-react/runtime";
 import { useParams } from "react-router-dom";
 import { useModuleReducer } from "../../../strore/reducer/Module.reducer";
 import SeanceTabComponent from "../../components/seance/seanceList.component";
-import { Button, Stack, TextField } from "@mui/material";
+import {
+  Button,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
 import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
 import IGroupe from "../../../models/Groupe.model";
@@ -60,7 +66,6 @@ const ModuleDetailsPage: React.FC = () => {
     module ?? {},
     usersSignal.value
   );
-  console.log(usersNoAffected.length);
   let groupesHeures: IGroupe[] = [];
   if (user?.profil === Profil.ADMINISTRATEUR) {
     groupesHeures = groupeReducer.getHeuresModule(module?.groupes ?? []);
@@ -113,9 +118,12 @@ const ModuleDetailsPage: React.FC = () => {
   const stateModule = moduleReducer.getState();
   return (
     <>
-      <Box sx={{ width: "100%" }}>
-        Nom : {module?.nom} <br /> Semaine : {module?.semaine} <br /> Heure :
-        {module?.heure}
+      <Box sx={{ width: "12%" }}>
+        <Typography variant="h6" sx={{ border: "1px solid lightgrey", p: 2 }}>
+          {" "}
+          Nom : {module?.nom} Semaine : {module?.semaine} <br /> Heure :{" "}
+          {module?.heure}
+        </Typography>
       </Box>
 
       <Box sx={{ width: "100%" }}>
@@ -150,11 +158,20 @@ const ModuleDetailsPage: React.FC = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <TextField
                     type="number"
-                    variant="standard"
-                    label="Nombre de groupe"
+                    variant="outlined"
+                    label="Nombre de groupes"
+                    placeholder="Saisissez le nombre de groupes (max. 10)"
+                    sx={{ minWidth: "200px", flexGrow: 1 }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <GroupAddOutlinedIcon color="success" />
+                        </InputAdornment>
+                      ),
+                    }}
                     {...register("nbr", {
                       max: 10,
-                      required: true,
+                      required: "Veuillez entrer un nombre entre 1 et 10",
                     })}
                     color="success"
                     slotProps={{
@@ -165,12 +182,23 @@ const ModuleDetailsPage: React.FC = () => {
                   ></TextField>
                   <TextField
                     type="text"
-                    variant="standard"
-                    placeholder="A"
-                    label="Lettre initial groupe"
+                    variant="outlined"
+                    label="Lettre initiale du groupe"
+                    placeholder="Ex : A"
+                    style={{ position: "relative", left: 10 }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <span style={{ fontSize: "1.2rem" }}>🔤</span>
+                        </InputAdornment>
+                      ),
+                    }}
                     {...register("initial", {
-                      maxLength: 1,
-                      required: true,
+                      maxLength: {
+                        value: 1,
+                        message: "Une seule lettre est permise",
+                      },
+                      required: "Veuillez entrer une lettre initiale",
                     })}
                     color="success"
                   ></TextField>
@@ -178,9 +206,15 @@ const ModuleDetailsPage: React.FC = () => {
                     color="success"
                     disabled={!isValid}
                     type="submit"
-                    variant="outlined"
+                    variant="text"
+                    style={{
+                      position: "relative",
+                      left: 20,
+                      padding: 10,
+                      top: 5,
+                    }}
                   >
-                    Ajouter
+                    Ajouter le groupe
                   </Button>
                 </form>
               </Stack>

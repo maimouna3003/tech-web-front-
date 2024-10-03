@@ -4,6 +4,7 @@ import ModuleFormComponent from "../../components/module/moduleForm.component";
 import { useNavigate } from "react-router-dom";
 import { RoutesName } from "../../../services/Helpers.service";
 import { addModuleApi } from "../../../restApi/Module.api";
+import { Stack } from "@mui/material";
 
 interface ModuleAddPageProps {}
 
@@ -28,7 +29,10 @@ const ModuleAddPage: React.FC<ModuleAddPageProps> = () => {
 
   return (
     <>
-      <ModuleFormComponent onSubmit={onSubmit} module={module} />
+      <Stack style={{ position : 'relative', left : '130px' }}>
+        <ModuleFormComponent onSubmit={onSubmit} module={module} />
+      </Stack>
+
     </>
   );
 };

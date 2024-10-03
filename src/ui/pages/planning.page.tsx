@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Paper, Stack, Typography } from "@mui/material";
 import FullCalendar from "@fullcalendar/react"; // Import FullCalendar
 import dayGridPlugin from "@fullcalendar/daygrid"; // Import the day grid plugin for month view
@@ -6,61 +6,18 @@ import { useCurrentUserReducer } from "../../strore/reducer/CurrentUser.reducer"
 import { useSignals } from "@preact/signals-react/runtime";
 import { getPlanningSeances } from "../../services/CurrentUser.service";
 
-interface Planning {
-  id: number;
-  date: string;
-  activity: string;
-  description: string;
-}
-
 const PlanningPage: React.FC = () => {
-  // const [plannings, setPlannings] = useState<Planning[]>([]);
-  // const [loading, setLoading] = useState(true);
   useSignals();
   const currentUserReducer = useCurrentUserReducer();
   const user = currentUserReducer.getCurrentUserSignal().value.user;
   const seances = getPlanningSeances(user?.groupes ?? []);
-  // Simuler une API qui renvoie des plannings
-  // useEffect(() => {
-  //   const fetchPlannings = async () => {
-  //     setLoading(true);
-  //     // Simulation d'un appel API (2s de délai)
-  //     setTimeout(() => {
-  //       const data = [
-  //         {
-  //           id: 1,
-  //           date: "2024-09-26",
-  //           activity: "Réunion d'équipe",
-  //           description: "Discussion sur les projets en cours.",
-  //         },
-  //         {
-  //           id: 2,
-  //           date: "2024-09-27",
-  //           activity: "Formation",
-  //           description: "Session de formation sur la sécurité informatique.",
-  //         },
-  //         {
-  //           id: 3,
-  //           date: "2024-09-29",
-  //           activity: "Préparation de l'événement",
-  //           description: "Planification et logistique.",
-  //         },
-  //       ];
-  //       setPlannings(data);
-  //       setLoading(false);
-  //     }, 2000); // Simule un délai de 2 secondes
-  //   };
-
-  //   fetchPlannings();
-  // }, []);
 
   // Transformer les données plannings en événements pour FullCalendar
 
-  console.log(seances.length);
   const events = seances.map((planning, index) => ({
-    title: "Seance " + (index + 1),
+    title: planning.nomGroupe,
     start: planning.createdAt,
-    extendedProps: { description: planning.groupe?.nom },
+    extendedProps: { description: "Seance " + planning.seance?.nom },
   }));
 
   return (

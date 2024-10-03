@@ -25,11 +25,13 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
 
   return (
     <Paper
+  
       elevation={4}
       style={{
         width: 800,
         padding: 8,
         margin: 10,
+         position : 'relative' , left : 100,
         alignContent: "center",
       }}
     >
@@ -37,6 +39,7 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
         <Stack spacing={3} width={600}>
           <TextField
             defaultValue={user?.nom}
+            style={{ position : 'relative' , left : 100 }}
             type="text"
             label="Nom"
             {...register("nom", {
@@ -47,6 +50,7 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
 
           <TextField
             defaultValue={user?.prenom}
+            style={{ position : 'relative' , left : 100 }}
             type="text"
             label="Prenom"
             {...register("prenom", {
@@ -57,6 +61,7 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
 
           <TextField
             defaultValue={user?.email}
+            style={{ position : 'relative' , left : 100 }}
             type="text"
             label="Email"
             {...register("email", {
@@ -67,6 +72,7 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
 
           <TextField
             defaultValue={user?.adresse}
+            style={{ position : 'relative' , left : 100 }}
             type="text"
             label="Adresse"
             {...register("adresse", {
@@ -75,11 +81,13 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
             color="success"
           ></TextField>
 
-          <InputLabel variant="standard" htmlFor="uncontrolled-native">
+          <InputLabel variant="standard" htmlFor="uncontrolled-native"
+           style={{ position : 'relative' , left : 100 }}>
             Sexe
           </InputLabel>
           <NativeSelect
             defaultValue={user?.sexe}
+            style={{ position : 'relative' , left : 100 }}
             variant="filled"
             {...register("sexe", {
               required: true,
@@ -90,10 +98,12 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
             <option value="F">Femme</option>
           </NativeSelect>
 
-          <InputLabel variant="standard" htmlFor="uncontrolled-native">
+          <InputLabel variant="standard" htmlFor="uncontrolled-native"
+           style={{ position : 'relative' , left : 100 }}>
             Profil
           </InputLabel>
           <NativeSelect
+           style={{ position : 'relative' , left : 100 }}
             defaultValue={user?.profil}
             {...register("profil", {
               required: true,
@@ -106,6 +116,7 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
 
           <TextField
             defaultValue={user?.telephone}
+            style={{ position : 'relative' , left : 100 }}
             type="number"
             label="Telephone"
             {...register("telephone", {
@@ -117,6 +128,7 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
           <TextField
             type="text"
             label="Mot de passe "
+            style={{ position : 'relative' , left : 100 }}
             {...register("password", {
               required: true,
               minLength: 8,
@@ -126,6 +138,7 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
 
           <TextField
             type="text"
+            style={{ position : 'relative' , left : 100 }}
             label="Confirmer mot de passe"
             {...register("confMotDepasse", {
               required: true,
@@ -135,6 +148,7 @@ const UserFormComponent: React.FC<UserFormComponentProps> = ({
           ></TextField>
 
           <Button
+            style={{ position : 'relative' , left : 100 }}
             color="success"
             disabled={!isValid}
             type="submit"

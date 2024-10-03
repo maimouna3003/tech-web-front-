@@ -30,6 +30,7 @@ const ModuleFormComponent: React.FC<ModuleFormComponentProps> = ({
         <Stack spacing={3} width={600}>
           <TextField
             defaultValue={module?.nom}
+            style={{ position : 'relative', left : 90 }}
             type="text"
             variant="standard"
             label="Nom"
@@ -41,6 +42,7 @@ const ModuleFormComponent: React.FC<ModuleFormComponentProps> = ({
 
           <TextField
             defaultValue={module?.semaine}
+            style={{ position : 'relative', left : 90 }}
             type="number"
             variant="standard"
             label="nombre de semaine"
@@ -52,6 +54,7 @@ const ModuleFormComponent: React.FC<ModuleFormComponentProps> = ({
 
           <TextField
             defaultValue={module?.heure}
+            style={{ position : 'relative', left : 90 }}
             type="number"
             variant="standard"
             label="nombre d'heure"
@@ -63,6 +66,7 @@ const ModuleFormComponent: React.FC<ModuleFormComponentProps> = ({
 
           <Button
             color="success"
+            style={{ position : 'relative', left : 90 }}
             disabled={!isValid}
             type="submit"
             variant="outlined"

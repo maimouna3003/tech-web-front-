@@ -30,11 +30,11 @@ const DashboardPage: React.FC<DashboardProps> = () => {
     user?.groupes ?? []
   );
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ p: 4, bgcolor: '#F6F8FB' }}>
       {/* Conteneur principal */}
       <Stack direction="row" spacing={4} justifyContent="space-between">
         {/* Colonne de gauche */}
-        <Box flex={2} sx={{ p: 3, borderRadius: 2, bgcolor: "#F6F8FB" }}>
+        <Box flex={2} sx={{ p: 3, borderRadius: 2, bgcolor: "#FFFFFF" }}>
           {/* Informations de l'utilisateur */}
           <Typography variant="h4" fontWeight="bold">
             {user?.nom} {user?.prenom}
@@ -70,7 +70,7 @@ const DashboardPage: React.FC<DashboardProps> = () => {
 
           {/* Cours non effectués */}
           <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 2 }}>
-            <CancelOutlined sx={{ color: "orange" }} />
+            <CancelOutlined sx={{ color: "red" }} />
             <Typography>Cours non effectués</Typography>
             <Typography fontWeight="bold" sx={{ ml: "auto" }}>
               {nbrSeanceNonTerminé}
