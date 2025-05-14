@@ -11,6 +11,6 @@ Respectez l'arborescence des dossiers, respecter le format des noms des fichiers
 
 Touts les variables seront de format **camelCase**, pas de type any
 
-### Functions
+### Functions 
 
 Touts les fonctions seront de format **camelCase**, et les fonctions seront déclarer sous **arrow Function** avec une constante
